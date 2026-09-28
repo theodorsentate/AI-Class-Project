@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f4f1ea;
+  --navy: #032147;
+  --blue: #209dd7;
+  --purple: #753991;
+  --yellow: #ecad0a;
+  --muted: #5c5c5c;
+  --line: #d9d3c6;
+  --wash: #ebe6db;
+}
+
+@theme inline {
+  --color-background: var(--paper);
+  --color-foreground: var(--navy);
+  --font-sans: var(--font-source);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--font-source), "Segoe UI", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.btn-primary {
+  background: var(--purple);
+  color: white;
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-primary:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  border: 1px solid var(--navy);
+  color: var(--navy);
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  background: white;
+}
