@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SearchDialog } from "@/components/SearchDialog";
 import { useCompany } from "@/context/CompanyContext";
 
 const links = [
@@ -37,7 +38,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               Answers, first-week needs, and a private path that does not require your manager.
             </p>
           </div>
-          <p className="text-sm text-[var(--muted)]">{company.industry}</p>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="text-sm text-[var(--muted)]">{company.industry}</p>
+            <SearchDialog />
+          </div>
         </div>
         <nav aria-label="Primary" className="border-t border-[var(--line)]">
           <ul className="mx-auto flex max-w-6xl flex-wrap gap-1 px-4 py-2">

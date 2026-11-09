@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { CHECKLIST_KEY, defaultChecklist } from "@/lib/checklist";
 import { composeReply } from "@/lib/compose";
 import { loadStartDate, loadThorough, saveThorough } from "@/lib/hire";
@@ -11,8 +12,9 @@ import { useCompany } from "@/context/CompanyContext";
 import { resourcesBlock } from "@/lib/safety";
 import type { AssistantReply } from "@/lib/types";
 
-export default function AskPage() {
+function AskForm() {
   const { company } = useCompany();
+  const params = useSearchParams();
   const [question, setQuestion] = useState("");
   const [confidential, setConfidential] = useState(true);
   const [thorough, setThorough] = useState(true);
@@ -22,7 +24,11 @@ export default function AskPage() {
 
   useEffect(() => {
     setThorough(loadThorough());
-  }, []);
+    const preset = params.get("q");
+    if (preset) {
+      setQuestion(preset);
+    }
+  }, [params]);
 
   const suggested = useMemo(
     () => [
@@ -260,5 +266,13 @@ export default function AskPage() {
         )}
       </aside>
     </div>
+  );
+}
+
+export default function AskPage() {
+  return (
+    <Suspense fallback={<p>Loading</p>}>
+      <AskForm />
+    </Suspense>
   );
 }
