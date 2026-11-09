@@ -13,6 +13,8 @@ const links = [
   { href: "/ask", label: "Ask privately" },
   { href: "/week", label: "First week" },
   { href: "/library", label: "Handbook" },
+  { href: "/people", label: "People" },
+  { href: "/data", label: "Data" },
   { href: "/escalate", label: "Send to People Ops or IT" },
   { href: "/support", label: "Need support?" },
   { href: "/setup", label: "Company setup" },

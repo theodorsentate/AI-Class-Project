@@ -1,4 +1,6 @@
 import { articles } from "./knowledge";
+import { people } from "./people";
+import { tables } from "./tables";
 
 export type SearchHit = {
   href: string;
@@ -27,6 +29,22 @@ export function searchAll(query: string): SearchHit[] {
   const pages = appPages.filter(
     (page) => page.title.toLowerCase().includes(q) || page.detail.toLowerCase().includes(q),
   );
+  const peopleHits = people
+    .filter((person) => `${person.name} ${person.role} ${person.handles}`.toLowerCase().includes(q))
+    .map((person) => ({
+      href: "/people",
+      title: person.name,
+      detail: `${person.role} · ${person.handles}`,
+      kind: "page" as const,
+    }));
+  const tableHits = tables
+    .filter((table) => `${table.title} ${table.summary}`.toLowerCase().includes(q))
+    .map((table) => ({
+      href: "/data",
+      title: table.title,
+      detail: table.summary,
+      kind: "page" as const,
+    }));
   const sections = articles
     .filter((article) =>
       [article.title, article.summary, article.body, article.tags.join(" ")]
@@ -41,7 +59,7 @@ export function searchAll(query: string): SearchHit[] {
       detail: article.category,
       kind: "handbook" as const,
     }));
-  const hits = [...pages, ...sections];
+  const hits = [...pages, ...peopleHits, ...tableHits, ...sections];
   hits.push({
     href: `/ask?q=${encodeURIComponent(query)}`,
     title: `Ask the assistant: ${query}`,
