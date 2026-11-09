@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { SearchDialog } from "@/components/SearchDialog";
 import { useCompany } from "@/context/CompanyContext";
+import { HANDBOOK_KEY, sanitizeHandbook } from "@/lib/handbook-validate";
+import { setArticles } from "@/lib/knowledge";
 
 const links = [
   { href: "/", label: "Home" },
@@ -18,6 +21,21 @@ const links = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { company } = useCompany();
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(HANDBOOK_KEY);
+      if (!raw) {
+        return;
+      }
+      const clean = sanitizeHandbook(JSON.parse(raw) as unknown);
+      if (clean) {
+        setArticles(clean);
+      }
+    } catch {
+      // Keep the built-in handbook.
+    }
+  }, []);
 
   return (
     <div className="min-h-full bg-[var(--paper)] text-[var(--navy)]">
