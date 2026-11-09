@@ -12,6 +12,11 @@ export type RankedHit = {
   score: number;
 };
 
+export type SourceRef = {
+  id: string;
+  title: string;
+};
+
 export type CompanyProfile = {
   name: string;
   industry: string;
@@ -32,7 +37,21 @@ export type ChecklistItem = {
 export type AssistantReply = {
   text: string;
   sources: string[];
+  sourceRefs: SourceRef[];
   escalate: boolean;
   sensitive: boolean;
+  crisis?: boolean;
+  category?: string;
+  followups?: string[];
   mode: "handbook" | "llm";
+};
+
+export type AskRequest = {
+  question?: string;
+  company?: CompanyProfile;
+  startDate?: string;
+  doneTitles?: string[];
+  openTitles?: string[];
+  thorough?: boolean;
+  articles?: Article[];
 };

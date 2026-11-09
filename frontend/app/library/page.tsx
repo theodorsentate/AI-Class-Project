@@ -9,8 +9,9 @@ export default function LibraryPage() {
       <header>
         <h1 className="text-3xl font-semibold">Handbook</h1>
         <p className="mt-3 max-w-2xl text-[var(--muted)] leading-7">
-          Generic, business-ready articles. Replace contacts in Company setup.
-          Search by asking the private assistant; this page is for browsing.
+          Northshore Goods handbook sections. Ask privately searches these
+          pages. Replace contacts in Company setup if you point this tool at
+          another business.
         </p>
       </header>
       {categories.map((category) => (

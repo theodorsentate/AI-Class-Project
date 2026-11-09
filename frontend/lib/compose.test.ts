@@ -9,6 +9,7 @@ describe("composeReply", () => {
     const reply = composeReply("zzzz qqqq", [], defaultCompany);
     expect(reply.escalate).toBe(true);
     expect(reply.sources).toEqual([]);
+    expect(reply.sourceRefs).toEqual([]);
   });
 
   it("cites the handbook for a lockout question", () => {
@@ -16,6 +17,7 @@ describe("composeReply", () => {
     const reply = composeReply("I am locked out of email", hits, defaultCompany);
     expect(reply.escalate).toBe(false);
     expect(reply.sources.join(" ")).toMatch(/Accounts/i);
+    expect(reply.sourceRefs[0]?.id).toBeTruthy();
   });
 
   it("adds the hotline for harassment questions", () => {

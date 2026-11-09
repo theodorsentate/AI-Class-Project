@@ -20,16 +20,15 @@ export function composeReply(
     return {
       text: `I do not have a confident match in the ${company.name} handbook. Send a confidential note to People Ops (${company.peopleEmail}) or IT (${company.itEmail}). That note is not copied to your manager.${sensitive ? ` If this is a safety or ethics concern, call ${company.ethicsHotline}.` : ""}`,
       sources: [],
+      sourceRefs: [],
       escalate: true,
       sensitive,
       mode: "handbook",
     };
   }
 
-  const extras = hits
-    .slice(1)
-    .filter((hit) => hit.score >= LOW_CONFIDENCE)
-    .map((hit) => hit.article.title);
+  const confident = hits.filter((hit) => hit.score >= LOW_CONFIDENCE);
+  const extras = confident.slice(1).map((hit) => hit.article.title);
 
   let text = `${firstSentences(top.article.body, 3)} Source: ${top.article.title}.`;
   if (extras.length > 0) {
@@ -41,7 +40,11 @@ export function composeReply(
 
   return {
     text,
-    sources: hits.filter((hit) => hit.score >= LOW_CONFIDENCE).map((hit) => hit.article.title),
+    sources: confident.map((hit) => hit.article.title),
+    sourceRefs: confident.map((hit) => ({
+      id: hit.article.id,
+      title: hit.article.title,
+    })),
     escalate: false,
     sensitive,
     mode: "handbook",

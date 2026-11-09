@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { CHECKLIST_KEY, defaultChecklist } from "@/lib/checklist";
 import { composeReply } from "@/lib/compose";
+import { loadStartDate, loadThorough, saveThorough } from "@/lib/hire";
 import { articles } from "@/lib/knowledge";
 import { retrieve } from "@/lib/retrieve";
 import { useCompany } from "@/context/CompanyContext";
@@ -12,9 +14,14 @@ export default function AskPage() {
   const { company } = useCompany();
   const [question, setQuestion] = useState("");
   const [confidential, setConfidential] = useState(true);
+  const [thorough, setThorough] = useState(true);
   const [reply, setReply] = useState<AssistantReply | null>(null);
   const [pending, setPending] = useState(false);
   const [history, setHistory] = useState<{ q: string; a: string }[]>([]);
+
+  useEffect(() => {
+    setThorough(loadThorough());
+  }, []);
 
   const suggested = useMemo(
     () => [
@@ -34,11 +41,26 @@ export default function AskPage() {
     setPending(true);
     const hits = retrieve(trimmed, articles);
     let next = composeReply(trimmed, hits, company);
+    let done: Record<string, boolean> = {};
+    try {
+      done = JSON.parse(window.localStorage.getItem(CHECKLIST_KEY) || "{}");
+    } catch {
+      done = {};
+    }
+    const doneTitles = defaultChecklist.filter((item) => done[item.id]).map((item) => item.title);
+    const openTitles = defaultChecklist.filter((item) => !done[item.id]).map((item) => item.title);
     try {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed, company }),
+        body: JSON.stringify({
+          question: trimmed,
+          company,
+          startDate: loadStartDate(),
+          doneTitles,
+          openTitles,
+          thorough,
+        }),
       });
       if (response.ok) {
         next = (await response.json()) as AssistantReply;
@@ -58,9 +80,9 @@ export default function AskPage() {
       <section>
         <h1 className="text-3xl font-semibold">Ask privately</h1>
         <p className="mt-3 max-w-2xl text-[var(--muted)] leading-7">
-          Type a question in everyday language. The assistant searches this
-          company handbook. Turn confidential on to keep the thread off the
-          local history.
+          Type a question in everyday language. The assistant searches the
+          company handbook and links the sections it used. Turn confidential on
+          to keep the thread off the local history.
         </p>
         <form
           className="mt-6 space-y-4"
@@ -93,6 +115,21 @@ export default function AskPage() {
               Confidential: do not save this question on this device
             </label>
           </div>
+          <div className="flex items-center gap-3">
+            <input
+              id="thorough"
+              type="checkbox"
+              checked={thorough}
+              onChange={(event) => {
+                setThorough(event.target.checked);
+                saveThorough(event.target.checked);
+              }}
+              className="size-5"
+            />
+            <label htmlFor="thorough" className="text-sm leading-6">
+              Read the whole handbook when an API key is set
+            </label>
+          </div>
           <button type="submit" className="btn-primary" disabled={pending}>
             {pending ? "Looking up" : "Get an answer"}
           </button>
@@ -112,19 +149,48 @@ export default function AskPage() {
             </button>
           ))}
         </div>
-        <div
-          className="card mt-8 p-6"
-          aria-live="polite"
-          aria-atomic="true"
-        >
+        <div className="card mt-8 p-6" aria-live="polite" aria-atomic="true">
           <h2 className="text-lg font-semibold">Answer</h2>
           {reply ? (
             <div className="mt-3 space-y-4">
               <p className="leading-7">{reply.text}</p>
-              {reply.sources.length > 0 ? (
-                <p className="text-sm text-[var(--muted)]">
-                  Handbook sources: {reply.sources.join(", ")}
-                </p>
+              {reply.followups && reply.followups.length > 0 ? (
+                <div>
+                  <p className="text-sm font-semibold">Follow up</p>
+                  <ul className="mt-2 flex flex-wrap gap-2">
+                    {reply.followups.map((item) => (
+                      <li key={item}>
+                        <button
+                          type="button"
+                          className="rounded-full border border-[var(--line)] bg-white px-3 py-2 text-sm"
+                          onClick={() => {
+                            setQuestion(item);
+                            void submit(item);
+                          }}
+                        >
+                          {item}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {reply.sourceRefs.length > 0 ? (
+                <div>
+                  <p className="text-sm font-semibold">From the handbook</p>
+                  <ul className="mt-2 space-y-2">
+                    {reply.sourceRefs.map((source) => (
+                      <li key={source.id}>
+                        <Link
+                          href={`/library/${source.id}`}
+                          className="font-medium text-[var(--blue)]"
+                        >
+                          {source.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ) : null}
               {reply.escalate ? (
                 <Link href="/escalate" className="inline-flex btn-primary items-center">
@@ -134,8 +200,8 @@ export default function AskPage() {
             </div>
           ) : (
             <p className="mt-3 text-[var(--muted)]">
-              Answers appear here. If the handbook is thin, you will be offered
-              People Ops or IT.
+              Answers appear here, with links into the matching handbook
+              sections. If nothing matches, you will be offered People Ops or IT.
             </p>
           )}
         </div>
