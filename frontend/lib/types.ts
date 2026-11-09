@@ -25,6 +25,8 @@ export type CompanyProfile = {
   ethicsHotline: string;
   buddyName: string;
   workHours: string;
+  logoUrl?: string;
+  accent?: string;
 };
 
 export type ChecklistItem = {

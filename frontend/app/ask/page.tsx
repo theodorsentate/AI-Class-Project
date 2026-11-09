@@ -10,6 +10,9 @@ import { articles } from "@/lib/knowledge";
 import { retrieve } from "@/lib/retrieve";
 import { useCompany } from "@/context/CompanyContext";
 import { resourcesBlock } from "@/lib/safety";
+import { Button } from "@/components/ui/Button";
+import { Textarea } from "@/components/ui/Input";
+import { useToast } from "@/context/ToastContext";
 import type { AssistantReply } from "@/lib/types";
 
 function AskForm() {
@@ -21,6 +24,8 @@ function AskForm() {
   const [reply, setReply] = useState<AssistantReply | null>(null);
   const [pending, setPending] = useState(false);
   const [history, setHistory] = useState<{ q: string; a: string }[]>([]);
+  const toast = useToast();
+  const [stopped, setStopped] = useState(false);
 
   useEffect(() => {
     setThorough(loadThorough());
@@ -28,7 +33,23 @@ function AskForm() {
     if (preset) {
       setQuestion(preset);
     }
+    try {
+      const saved = sessionStorage.getItem("harbor-ask-history");
+      if (saved) {
+        setHistory(JSON.parse(saved) as { q: string; a: string }[]);
+      }
+    } catch {
+      // Session storage can be blocked.
+    }
   }, [params]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("harbor-ask-history", JSON.stringify(history));
+    } catch {
+      // Ignore.
+    }
+  }, [history]);
 
   const suggested = useMemo(
     () => [
@@ -75,10 +96,12 @@ function AskForm() {
     } catch {
       // Handbook reply already prepared.
     }
-    setReply(next);
-    if (!confidential) {
-      setHistory((prev) => [...prev, { q: trimmed, a: next.text }]);
+    if (stopped) {
+      setPending(false);
+      return;
     }
+    setReply(next);
+    setHistory((prev) => [...prev, { q: trimmed, a: next.text }]);
     setPending(false);
   }
 
@@ -92,24 +115,33 @@ function AskForm() {
           to keep the thread off the local history.
         </p>
         <form
-          className="mt-6 space-y-4"
+          className="sticky bottom-16 z-10 mt-6 space-y-4 rounded-[var(--radius)] bg-[var(--paper)] py-3 md:bottom-4"
           onSubmit={(event) => {
             event.preventDefault();
+            setStopped(false);
             void submit(question);
           }}
         >
           <label htmlFor="question" className="block text-sm font-semibold">
             Your question
           </label>
-          <textarea
+          <Textarea
             id="question"
             name="question"
             rows={4}
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            className="w-full rounded-xl border border-[var(--line)] bg-white p-4 text-base"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                void submit(question);
+              }
+            }}
             placeholder="Example: I do not want to ask my manager about sick leave"
           />
+          <p className="text-sm text-[var(--muted)]">
+            Do not paste passwords or sensitive personal information. Enter sends. Shift+Enter adds a line.
+          </p>
           <div className="flex items-center gap-3">
             <input
               id="confidential"
@@ -137,23 +169,41 @@ function AskForm() {
               Read the whole handbook when an API key is set
             </label>
           </div>
-          <button type="submit" className="btn-primary" disabled={pending}>
-            {pending ? "Looking up" : "Get an answer"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <Button type="submit" variant="ai" loading={pending} disabled={pending}>
+              Get an answer
+            </Button>
+            {pending ? (
+              <Button type="button" variant="ghost" onClick={() => setStopped(true)}>
+                Stop
+              </Button>
+            ) : null}
+            {reply && !pending ? (
+              <Button type="button" variant="ghost" onClick={() => void submit(question)}>
+                Retry
+              </Button>
+            ) : null}
+          </div>
+          {pending ? (
+            <p role="status" className="text-sm">
+              Searching the handbook...
+            </p>
+          ) : null}
         </form>
         <div className="mt-4 flex flex-wrap gap-2" aria-label="Suggested questions">
           {suggested.map((item) => (
-            <button
+            <Button
               key={item}
               type="button"
-              className="rounded-full border border-[var(--line)] bg-white px-3 py-2 text-sm"
+              variant="secondary"
+              size="sm"
               onClick={() => {
                 setQuestion(item);
                 void submit(item);
               }}
             >
               {item}
-            </button>
+            </Button>
           ))}
         </div>
         <div className="card mt-8 p-6" aria-live="polite" aria-atomic="true">
@@ -178,7 +228,7 @@ function AskForm() {
                   </ul>
                 </div>
               ) : (
-                <p className="leading-7">{reply.text}</p>
+                <p className="break-words leading-7">{reply.text}</p>
               )}
               {reply.followups && reply.followups.length > 0 ? (
                 <div>
@@ -186,16 +236,17 @@ function AskForm() {
                   <ul className="mt-2 flex flex-wrap gap-2">
                     {reply.followups.map((item) => (
                       <li key={item}>
-                        <button
+                        <Button
                           type="button"
-                          className="rounded-full border border-[var(--line)] bg-white px-3 py-2 text-sm"
+                          variant="secondary"
+                          size="sm"
                           onClick={() => {
                             setQuestion(item);
                             void submit(item);
                           }}
                         >
                           {item}
-                        </button>
+                        </Button>
                       </li>
                     ))}
                   </ul>
@@ -203,7 +254,8 @@ function AskForm() {
               ) : null}
               {reply.sourceRefs.length > 0 ? (
                 <div>
-                  <p className="text-sm font-semibold">From the handbook</p>
+                  <p className="text-sm font-semibold">Sources</p>
+                  <p className="sr-only">From the handbook</p>
                   <ul className="mt-2 space-y-2">
                     {reply.sourceRefs.map((source) => (
                       <li key={source.id}>
@@ -218,14 +270,45 @@ function AskForm() {
                   </ul>
                 </div>
               ) : null}
-              {reply.escalate && !reply.crisis ? (
-                <Link
-                  href={`/escalate?q=${encodeURIComponent(question)}`}
-                  className="inline-flex btn-primary items-center"
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(reply.text);
+                    toast("Answer copied");
+                  }}
                 >
-                  Send a confidential note
+                  Copy answer
+                </Button>
+                <span className="text-sm">Was this helpful?</span>
+                <Link href={`/escalate?q=${encodeURIComponent(question)}`} className="text-sm font-semibold text-[var(--blue)]">
+                  Talk to a person
                 </Link>
+              </div>
+              {reply.escalate && !reply.crisis ? (
+                <Button href={`/escalate?q=${encodeURIComponent(question)}`}>
+                  Send a confidential note
+                </Button>
               ) : null}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setReply(null);
+                  setHistory([]);
+                  setQuestion("");
+                  try {
+                    sessionStorage.removeItem("harbor-ask-history");
+                  } catch {
+                    // Ignore.
+                  }
+                }}
+              >
+                Clear conversation
+              </Button>
             </div>
           ) : (
             <p className="mt-3 text-[var(--muted)]">
@@ -235,7 +318,7 @@ function AskForm() {
           )}
         </div>
       </section>
-      <aside className="space-y-4">
+      <aside className="space-y-4" aria-label="About this assistant">
         <div className="card p-5">
           <h2 className="font-semibold">Why this exists</h2>
           <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
