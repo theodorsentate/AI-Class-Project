@@ -21,12 +21,13 @@ Eight tabs: Home, Ask, Checklist, Handbook, Data, People, Email and Insights.
 - **Data**: 30 lookup tables (holidays, pay dates, plan comparisons, approval limits, contacts and more).
 - **People**: a searchable directory of 51 fictional people, an org chart, office lines and outside providers.
 - **Email**: pick who to contact and get an AI-drafted email you can open in your mail app.
-- **Checklist**: a first-weeks checklist with saved progress.
+- **Checklist**: grouped first-weeks checklist with saved progress. Enter your start date on Home to see which day you're on and when training and benefits enrollment are due.
+- **Search**: press Ctrl+K (or ⌘K) anywhere to search sections, tables and people, or ask the assistant.
 - **Insights**: for editors only; shows unanswered and downvoted questions.
 
 ## How the AI is used
 
-The model only answers from the handbook. For each question the app picks the most relevant sections, tables and people (a simple keyword-scoring search), sends them to Claude, and asks for a structured answer with sources. If the handbook doesn't cover the question, the app says so instead of guessing.
+The model only answers from the handbook. By default (**Thorough mode**, a checkbox under the chat box) the app sends Claude the whole knowledge base with every question: all 93 sections, all 30 tables and the full people directory, about 50,000 tokens. It also tells the model today's date and which checklist items are done, so it can answer "what should I do next?". That is slower and uses more of the viewer's Claude plan. With Thorough mode off, the app picks the most relevant sections, tables and people (a simple keyword-scoring search) and sends only those, about 9,000 tokens. If the handbook ever grows past a size limit, it falls back to that search automatically. Either way, Claude is asked for a structured answer with sources. If the handbook doesn't cover the question, the app says so instead of guessing.
 
 Questions about sensitive topics (harassment, mental health, safety, legal trouble and similar) are routed to a real person and to crisis resources instead of being answered by the chatbot. This uses keyword rules plus the model's own flag. **The keyword rules miss many indirectly worded messages**, so this is a safety net, not a complete safeguard.
 
