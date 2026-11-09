@@ -1,21 +1,43 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { SearchDialog } from "@/components/SearchDialog";
 import { useCompany } from "@/context/CompanyContext";
+import { HANDBOOK_KEY, sanitizeHandbook } from "@/lib/handbook-validate";
+import { setArticles } from "@/lib/knowledge";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/ask", label: "Ask privately" },
   { href: "/week", label: "First week" },
   { href: "/library", label: "Handbook" },
+  { href: "/people", label: "People" },
+  { href: "/data", label: "Data" },
   { href: "/escalate", label: "Send to People Ops or IT" },
+  { href: "/support", label: "Need support?" },
   { href: "/setup", label: "Company setup" },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { company } = useCompany();
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(HANDBOOK_KEY);
+      if (!raw) {
+        return;
+      }
+      const clean = sanitizeHandbook(JSON.parse(raw) as unknown);
+      if (clean) {
+        setArticles(clean);
+      }
+    } catch {
+      // Keep the built-in handbook.
+    }
+  }, []);
 
   return (
     <div className="min-h-full bg-[var(--paper)] text-[var(--navy)]">
@@ -36,7 +58,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               Answers, first-week needs, and a private path that does not require your manager.
             </p>
           </div>
-          <p className="text-sm text-[var(--muted)]">{company.industry}</p>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="text-sm text-[var(--muted)]">{company.industry}</p>
+            <SearchDialog />
+          </div>
         </div>
         <nav aria-label="Primary" className="border-t border-[var(--line)]">
           <ul className="mx-auto flex max-w-6xl flex-wrap gap-1 px-4 py-2">

@@ -14,6 +14,10 @@ test("private ask returns a time off answer", async ({ page }) => {
   await page.getByRole("button", { name: "Get an answer" }).click();
   await expect(page.getByRole("heading", { name: "Answer" })).toBeVisible();
   await expect(page.getByText(/time off|leave|timekeeping/i).first()).toBeVisible();
+  const handbookLink = page.getByRole("link", { name: /Time off, sick days, and holidays/i });
+  await expect(handbookLink).toBeVisible();
+  await handbookLink.click();
+  await expect(page.getByRole("heading", { name: "Time off, sick days, and holidays" })).toBeVisible();
 });
 
 test("first week checklist can be completed", async ({ page }) => {

@@ -1,13 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useCompany } from "@/context/CompanyContext";
 
-export default function EscalatePage() {
+function EscalateForm() {
   const { company } = useCompany();
+  const params = useSearchParams();
   const [team, setTeam] = useState<"people" | "it">("people");
   const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState("");
   const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    const preset = params.get("q");
+    if (preset) {
+      setMessage(preset);
+    }
+  }, [params]);
 
   const inbox = team === "people" ? company.peopleEmail : company.itEmail;
 
@@ -77,14 +87,72 @@ export default function EscalatePage() {
               onChange={(event) => setMessage(event.target.value)}
             />
           </div>
+          <p className="text-sm font-semibold">Draft it for me</p>
+          <div className="flex flex-wrap gap-2">
+            {[
+              ["benefits", "Benefits question"],
+              ["access", "Laptop or access"],
+              ["schedule", "Schedule"],
+              ["timeoff", "Time off"],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                className="rounded-full border border-[var(--line)] bg-white px-3 py-2 text-sm"
+                onClick={async () => {
+                  setTeam(id === "access" ? "it" : "people");
+                  const response = await fetch("/api/draft", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      topic: id,
+                      need: message,
+                      company,
+                      team: id === "access" ? "it" : "people",
+                    }),
+                  });
+                  if (response.ok) {
+                    const draft = (await response.json()) as { subject: string; body: string };
+                    setSubject(draft.subject);
+                    setMessage(draft.body);
+                  }
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <label htmlFor="subject" className="block text-sm font-semibold">
+            Subject
+          </label>
+          <input
+            id="subject"
+            className="w-full rounded-xl border border-[var(--line)] p-3"
+            value={subject}
+            onChange={(event) => setSubject(event.target.value)}
+          />
           <p className="text-sm text-[var(--muted)]">
             Ethics hotline if email is the wrong channel: {company.ethicsHotline}
           </p>
+          <a
+            className="btn-secondary inline-flex items-center"
+            href={`mailto:${inbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`}
+          >
+            Open in mail app
+          </a>
           <button type="submit" className="btn-primary">
             Queue confidential note
           </button>
         </form>
       )}
     </div>
+  );
+}
+
+export default function EscalatePage() {
+  return (
+    <Suspense fallback={<p>Loading</p>}>
+      <EscalateForm />
+    </Suspense>
   );
 }

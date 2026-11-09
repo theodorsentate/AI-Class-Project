@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { StartDateField } from "@/components/StartDateField";
+import { UpNext } from "@/components/UpNext";
 
 const actions = [
   {
@@ -40,6 +42,8 @@ export default function HomePage() {
           </Link>
         ))}
       </section>
+      <StartDateField />
+      <UpNext />
       <section className="card p-6">
         <h2 className="text-xl font-semibold">Reliable by design</h2>
         <ul className="mt-4 list-disc space-y-2 pl-5 text-[var(--muted)] leading-7">

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { defaultCompany } from "@/lib/company";
+import { HANDBOOK_KEY, parseHandbookInput, validateDraft } from "@/lib/handbook-validate";
+import { articles, setArticles } from "@/lib/knowledge";
 import { useCompany } from "@/context/CompanyContext";
 import type { CompanyProfile } from "@/lib/types";
 
@@ -20,6 +22,8 @@ export default function SetupPage() {
   const [draft, setDraft] = useState<CompanyProfile>(company);
   const [hydrated, setHydrated] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [handbookText, setHandbookText] = useState("");
+  const [handbookMessage, setHandbookMessage] = useState("");
 
   useEffect(() => {
     if (ready && !hydrated) {
@@ -74,6 +78,57 @@ export default function SetupPage() {
             Saved. The header now uses {draft.name}.
           </p>
         ) : null}
+      </form>
+      <form
+        className="card space-y-4 p-6"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const parsed = parseHandbookInput(handbookText);
+          if (!parsed.articles) {
+            setHandbookMessage(parsed.error || "Could not read that handbook.");
+            return;
+          }
+          const problems = validateDraft(parsed.articles);
+          if (problems.length) {
+            setHandbookMessage(problems[0] + (problems.length > 1 ? ` (and ${problems.length - 1} more)` : ""));
+            return;
+          }
+          setArticles(parsed.articles);
+          try {
+            window.localStorage.setItem(HANDBOOK_KEY, JSON.stringify({ sections: parsed.articles }));
+          } catch {
+            setHandbookMessage("Saved in memory only. This browser blocked local storage.");
+            return;
+          }
+          setHandbookMessage(`Saved ${parsed.articles.length} sections on this device.`);
+        }}
+      >
+        <h2 className="text-xl font-semibold">Handbook editor</h2>
+        <p className="text-sm text-[var(--muted)]">
+          Paste JSON with a sections array, or markdown with ## headings. Unsafe HTML is
+          stripped. Blank titles, duplicate ids, and oversize drafts are rejected.
+        </p>
+        <label htmlFor="handbook-draft" className="block text-sm font-semibold">
+          Handbook JSON or markdown
+        </label>
+        <textarea
+          id="handbook-draft"
+          rows={10}
+          className="w-full rounded-xl border border-[var(--line)] p-3 font-mono text-sm"
+          value={handbookText}
+          onChange={(event) => setHandbookText(event.target.value)}
+        />
+        <button type="submit" className="btn-primary">
+          Validate and save handbook
+        </button>
+        {handbookMessage ? (
+          <p role="status" className="text-sm">
+            {handbookMessage}
+          </p>
+        ) : null}
+        <p className="text-sm text-[var(--muted)]">
+          Built-in sections on this device: {articles.length}.
+        </p>
       </form>
     </div>
   );

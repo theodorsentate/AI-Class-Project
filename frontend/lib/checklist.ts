@@ -9,6 +9,7 @@ export const defaultChecklist: ChecklistItem[] = [
     detail:
       "Bring the documents People Ops listed in your offer packet. This is required before you are paid.",
     owner: "You",
+    dueBusinessDay: 3,
   },
   {
     id: "access",
@@ -16,6 +17,7 @@ export const defaultChecklist: ChecklistItem[] = [
     detail:
       "IT sends a first-login email. If it did not arrive, ask this assistant or write IT directly. You do not need your manager for access issues.",
     owner: "IT",
+    dueBusinessDay: 1,
   },
   {
     id: "handbook",
@@ -44,6 +46,7 @@ export const defaultChecklist: ChecklistItem[] = [
     detail:
       "Many plans lock after a short window. Open the Benefits article even if you are not ready to choose yet.",
     owner: "People Ops",
+    dueBusinessDay: 10,
   },
   {
     id: "private-question",
