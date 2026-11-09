@@ -4,6 +4,7 @@ import { canSendAll, excerptText, fullCorpusText } from "@/lib/corpus";
 import { articles as defaultArticles, getArticle } from "@/lib/knowledge";
 import { sectionIndex, systemPrompt } from "@/lib/prompts";
 import { retrieve } from "@/lib/retrieve";
+import { classify } from "@/lib/safety";
 import type { Article, AskRequest, AssistantReply, CompanyProfile } from "@/lib/types";
 
 function refsFromTitles(titles: string[], pool: Article[]) {
@@ -31,7 +32,11 @@ export async function POST(request: Request) {
   const company = { ...defaultCompany, ...body.company };
   const pool = body.articles?.length ? body.articles : defaultArticles;
   const hits = retrieve(question, pool);
+  const safety = classify(question);
   const handbook = fallback(question, hits, company);
+  if (safety?.crisis) {
+    return Response.json({ ...handbook, crisis: true, sensitive: true, text: "", escalate: false });
+  }
   const key = process.env.OPENAI_API_KEY;
 
   if (!key) {
@@ -107,8 +112,9 @@ export async function POST(request: Request) {
       sourceRefs,
       sensitive: Boolean(parsed.sensitive) || handbook.sensitive,
       category: parsed.category || handbook.category,
+      crisis: handbook.crisis,
       followups: parsed.followups,
-      escalate: parsed.answerable === false || handbook.escalate,
+      escalate: parsed.answerable === false || handbook.escalate || Boolean(parsed.sensitive),
       mode: "llm",
     };
     if (sourceRefs.length === 0 && parsed.answerable !== false) {

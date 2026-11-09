@@ -1,5 +1,5 @@
+import { classify } from "./safety";
 import type { AssistantReply, CompanyProfile, RankedHit } from "./types";
-import { isSensitiveQuestion } from "./retrieve";
 
 const LOW_CONFIDENCE = 0.12;
 
@@ -13,8 +13,23 @@ export function composeReply(
   hits: RankedHit[],
   company: CompanyProfile,
 ): AssistantReply {
-  const sensitive = isSensitiveQuestion(question);
+  const safety = classify(question);
+  const sensitive = Boolean(safety);
+  const crisis = Boolean(safety?.crisis);
   const top = hits[0];
+
+  if (crisis) {
+    return {
+      text: "",
+      sources: [],
+      sourceRefs: [],
+      escalate: false,
+      sensitive: true,
+      crisis: true,
+      category: safety?.cat,
+      mode: "handbook",
+    };
+  }
 
   if (!top || top.score < LOW_CONFIDENCE) {
     return {
@@ -23,6 +38,8 @@ export function composeReply(
       sourceRefs: [],
       escalate: true,
       sensitive,
+      crisis: false,
+      category: safety?.cat,
       mode: "handbook",
     };
   }
@@ -45,8 +62,10 @@ export function composeReply(
       id: hit.article.id,
       title: hit.article.title,
     })),
-    escalate: false,
+    escalate: sensitive,
     sensitive,
+    crisis: false,
+    category: safety?.cat,
     mode: "handbook",
   };
 }

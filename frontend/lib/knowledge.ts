@@ -39,7 +39,7 @@ export const articles: Article[] = [
     category: "People Ops",
     tags: ["benefits", "health", "insurance", "401k", "retirement", "deadline", "eap"],
     summary: "Health, retirement, and related plans, including the deadline that is easy to miss.",
-    body: "New hires elect medical, dental, vision, and retirement contributions in the benefits portal. At Northshore Goods, benefits enrollment is due by business day 10 after your start date. Missing the window can mean waiting until the next open enrollment unless a qualifying life event applies. Plan comparisons live in the Benefits lookup table. This assistant will not choose a plan for you. The Employee Assistance Program (EAP) is a free, confidential counseling benefit for you and your household. The EAP phone number is in the External contacts table. Beneficiaries and dependents should be updated in the same portal you used to enroll.",
+    body: "New hires elect medical, dental, vision, and retirement contributions in the benefits portal. At Northshore Goods, benefits enrollment is due by business day 10 after your start date. Missing the window can mean waiting until the next open enrollment unless a qualifying life event applies. Plan comparisons live in the Benefits lookup table. This assistant will not choose a plan for you. The Employee Assistance Program (EAP) is a free, confidential counseling benefit for you and your household at 1-800-555-0199. Beneficiaries and dependents should be updated in the same portal you used to enroll.",
   },
   {
     id: "it-setup",

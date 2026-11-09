@@ -1,13 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useCompany } from "@/context/CompanyContext";
 
-export default function EscalatePage() {
+function EscalateForm() {
   const { company } = useCompany();
+  const params = useSearchParams();
   const [team, setTeam] = useState<"people" | "it">("people");
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    const preset = params.get("q");
+    if (preset) {
+      setMessage(preset);
+    }
+  }, [params]);
 
   const inbox = team === "people" ? company.peopleEmail : company.itEmail;
 
@@ -86,5 +95,13 @@ export default function EscalatePage() {
         </form>
       )}
     </div>
+  );
+}
+
+export default function EscalatePage() {
+  return (
+    <Suspense fallback={<p>Loading</p>}>
+      <EscalateForm />
+    </Suspense>
   );
 }

@@ -8,6 +8,7 @@ import { loadStartDate, loadThorough, saveThorough } from "@/lib/hire";
 import { articles } from "@/lib/knowledge";
 import { retrieve } from "@/lib/retrieve";
 import { useCompany } from "@/context/CompanyContext";
+import { resourcesBlock } from "@/lib/safety";
 import type { AssistantReply } from "@/lib/types";
 
 export default function AskPage() {
@@ -153,7 +154,26 @@ export default function AskPage() {
           <h2 className="text-lg font-semibold">Answer</h2>
           {reply ? (
             <div className="mt-3 space-y-4">
-              <p className="leading-7">{reply.text}</p>
+              {reply.crisis ? (
+                <div>
+                  <p className="font-semibold">Please reach out to someone right now</p>
+                  <p className="mt-2 leading-7">
+                    If you or someone else is in immediate danger, call your local emergency number.
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    {resourcesBlock(true).map((item) => (
+                      <li key={item.href}>
+                        <a href={item.href} className="font-medium text-[var(--blue)]">
+                          {item.label}
+                        </a>
+                        <span className="block text-sm text-[var(--muted)]">{item.detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="leading-7">{reply.text}</p>
+              )}
               {reply.followups && reply.followups.length > 0 ? (
                 <div>
                   <p className="text-sm font-semibold">Follow up</p>
@@ -192,8 +212,11 @@ export default function AskPage() {
                   </ul>
                 </div>
               ) : null}
-              {reply.escalate ? (
-                <Link href="/escalate" className="inline-flex btn-primary items-center">
+              {reply.escalate && !reply.crisis ? (
+                <Link
+                  href={`/escalate?q=${encodeURIComponent(question)}`}
+                  className="inline-flex btn-primary items-center"
+                >
                   Send a confidential note
                 </Link>
               ) : null}

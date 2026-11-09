@@ -20,10 +20,18 @@ describe("composeReply", () => {
     expect(reply.sourceRefs[0]?.id).toBeTruthy();
   });
 
-  it("adds the hotline for harassment questions", () => {
+  it("answers informational harassment-policy questions without crisis routing", () => {
     const hits = retrieve("How do I report harassment?", articles);
     const reply = composeReply("How do I report harassment?", hits, defaultCompany);
+    expect(reply.crisis).toBeFalsy();
+    expect(reply.sensitive).toBe(false);
+    expect(reply.text.length).toBeGreaterThan(20);
+  });
+
+  it("routes a personal harassment report to a human", () => {
+    const hits = retrieve("My manager keeps harassing me", articles);
+    const reply = composeReply("My manager keeps harassing me", hits, defaultCompany);
     expect(reply.sensitive).toBe(true);
-    expect(reply.text).toContain(defaultCompany.ethicsHotline);
+    expect(reply.escalate).toBe(true);
   });
 });

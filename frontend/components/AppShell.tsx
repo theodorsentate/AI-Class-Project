@@ -10,6 +10,7 @@ const links = [
   { href: "/week", label: "First week" },
   { href: "/library", label: "Handbook" },
   { href: "/escalate", label: "Send to People Ops or IT" },
+  { href: "/support", label: "Need support?" },
   { href: "/setup", label: "Company setup" },
 ];
 
