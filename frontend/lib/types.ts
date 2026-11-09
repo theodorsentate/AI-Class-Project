@@ -32,6 +32,7 @@ export type ChecklistItem = {
   title: string;
   detail: string;
   owner: "You" | "IT" | "People Ops";
+  dueBusinessDay?: number;
 };
 
 export type AssistantReply = {
