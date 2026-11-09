@@ -382,6 +382,8 @@
   .qcount { font-size: 12.5px; color: var(--ink-2); margin-right: 10px; }
   .qcount.warn { color: var(--danger); font-weight: 600; }
   .retry { margin-top: 8px; }
+  .thorough { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; font-size: 13px; color: var(--ink-2); cursor: pointer; }
+  .thorough input { width: 16px; height: 16px; accent-color: var(--green); }
   .toast { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 999px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 30; }
   .toast.show { opacity: 1; }
   .sr { position: absolute; left: -9999px; }
@@ -456,7 +458,7 @@
         <button class="btn primary" id="askBtn" type="button">Ask</button>
         <button class="btn" id="stopBtn" type="button" hidden>Stop</button>
       </div>
-      <div class="composer hint"><span id="hint">Answers come only from the handbook. Sensitive topics are pointed to a real person.</span><span class="qcount" id="qCount" hidden></span><button class="linkbtn" id="supportBtn" type="button" style="margin-right:12px">Need support?</button><button class="btn ghost" id="clearBtn" type="button">New conversation</button></div>
+      <div class="composer hint"><span id="hint">Answers come only from the handbook. Sensitive topics are pointed to a real person.</span><span class="qcount" id="qCount" hidden></span><label class="thorough" title="Thorough: the assistant reads the whole handbook for every question. Slower and uses more of your Claude plan."><input type="checkbox" id="thoroughCb"> Thorough mode</label><button class="linkbtn" id="supportBtn" type="button" style="margin-right:12px">Need support?</button><button class="btn ghost" id="clearBtn" type="button">New conversation</button></div>
     </div>
   </section>
 
@@ -2660,6 +2662,7 @@ function renderAll() {
   if (handbook.people !== lastPeopleRef || handbook.tables !== lastTablesRef) { renderPeople(); }
   lastTablesRef = handbook.tables; lastPeopleRef = handbook.people;
   renderHomeContacts();
+  if (window.syncThorough) window.syncThorough();
 }
 let lastTablesRef = null, lastPeopleRef = null;
 
@@ -2801,10 +2804,28 @@ function sectionIndex(query, included) {
   return `(The handbook has ${C.length} documents: ${Object.entries(groups).map(([g, n]) => g + " " + n).join(", ")}, plus data tables and a people directory. These are the closest other matches:)\n` + top.join("\n");
 }
 function excerptText(secs) { return secs.map((s) => `## ${s.title}\n${s.body}`).join("\n\n"); }
-function systemPrompt(excerpts, idx) {
+// ---------- Thorough mode: send the whole knowledge base ----------
+const THOROUGH_KEY = "onb:thorough";
+const FULL_MAX_CHARS = 420000; // about 105,000 tokens; above this the app falls back to retrieval
+function thoroughOn() { try { return localStorage.getItem(THOROUGH_KEY) !== "0"; } catch { return true; } }
+function setThorough(on) { try { localStorage.setItem(THOROUGH_KEY, on ? "1" : "0"); } catch {} }
+function fullCorpusText() { return excerptText(corp()); }
+function canSendAll() { const n = corp().reduce((a, s) => a + s.title.length + s.body.length + 6, 0); return n <= FULL_MAX_CHARS; }
+function getStart() { try { return localStorage.getItem("onb:start") || ""; } catch { return ""; } }
+function hireContext() {
+  const done = loadChecks(); const items = handbook.checklist || [];
+  const fin = items.filter((x) => done[x]), left = items.filter((x) => !done[x]);
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const st = getStart();
+  const sd = st ? new Date(st + "T12:00:00") : null;
+  let start = "Start date: not set.";
+  if (sd && !isNaN(sd)) { const d = Math.round((Date.now() - sd.getTime()) / 86400000); start = `Start date: ${sd.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} (${d >= 0 ? "day " + (d + 1) + " of employment" : "starts in " + (-d) + " day" + (d === -1 ? "" : "s")}).`; }
+  return `ABOUT THIS NEW HIRE (use it for questions like "what should I do next?" or "what is due soon?"; do not mention it otherwise):\nToday is ${today}. ${start}\nChecklist done (${fin.length} of ${items.length}): ${fin.length ? fin.join("; ") : "none yet"}.\nChecklist still open: ${left.length ? left.join("; ") : "nothing"}.`;
+}
+function systemPrompt(excerpts, idx, full) {
   return `You are the employee onboarding assistant for ${handbook.company}. A new hire is asking you questions.
 
-Answer ONLY from the handbook excerpts below (some excerpts are data tables, written as 'Column: value' rows). Be warm, plain-spoken and brief (2-5 sentences, or a short dash list). Quote exact numbers, dates, limits and steps from the excerpts. Never invent policies, numbers, names or links, and never fill a gap with a guess.
+${full ? "Below is the COMPLETE handbook: every section, every data table and the whole people directory. Use all of it, and combine several parts when a question needs more than one.\n\n" : ""}Answer ONLY from the handbook ${full ? "below" : "excerpts below"} (some entries are data tables, written as 'Column: value' rows). Be warm, plain-spoken and brief (2-5 sentences, or a short dash list). Quote exact numbers, dates, limits and steps from the excerpts. Never invent policies, numbers, names or links, and never fill a gap with a guess.
 
 Reply with ONLY a JSON object, no markdown fences, in exactly this shape:
 {"answer": string, "sources": string[], "answerable": boolean, "sensitive": boolean, "category": string, "followups": string[], "need_sections": string[]}
@@ -2812,13 +2833,12 @@ Reply with ONLY a JSON object, no markdown fences, in exactly this shape:
 - followups: 2 or 3 short questions (under 10 words each, written as the new hire would ask them) that are closely related to what they just asked AND answerable from the handbook index. Never repeat the question just asked. Use [] when sensitive is true.
 - sources: the exact section titles you used ([] if none).
 - answerable: false if the handbook does not contain the answer. In that case say so in one sentence and point to the right person from "Who to ask".
-- need_sections: only when answerable is false: up to 3 exact titles from the SECTION INDEX that probably contain the answer but are NOT in the excerpts below. Use [] if the handbook truly does not cover it. Do not list sections already shown.
+- need_sections: only when answerable is false: up to 3 exact titles from the SECTION INDEX that probably contain the answer but are NOT in the excerpts below. Use [] if the handbook truly does not cover it. Do not list sections already shown. When the complete handbook is provided below, always use [].
 - sensitive: true when the person describes a personal situation involving harassment, discrimination, retaliation, a mental health struggle, physical safety, a disability or medical accommodation, a legal dispute, being terminated, a bereavement or family emergency, or asks to hide or falsify something. Also set it to true for INDIRECT signs of distress: hopelessness, feeling like a burden, not wanting to be here, withdrawing, or dark or numb feelings, even if they never say so directly. If you are unsure whether a message is personal distress or misconduct, choose sensitive: true. Routine policy questions (how parental leave works, what benefits cover, how the code of conduct is enforced, how to give notice) are NOT sensitive: answer them from the handbook. When true, set answer to "" and category to one of: harassment, discrimination, mental_health, safety, medical, legal. Otherwise category is "".
 
-SECTION INDEX (everything the handbook covers):
-${idx === undefined ? sectionIndex() : idx}
+${hireContext()}
 
-HANDBOOK EXCERPTS:
+${full ? "" : `SECTION INDEX (everything the handbook covers):\n${idx === undefined ? sectionIndex() : idx}\n\n`}${full ? "COMPLETE HANDBOOK:" : "HANDBOOK EXCERPTS:"}
 ${excerpts}`;
 }
 const REMIND = "\n\n(Reply with the JSON object only.)";
@@ -2907,14 +2927,16 @@ async function ask(text) {
   const seed = { role: "assistant", content: '{"answer":"Understood.","sources":[],"answerable":true,"sensitive":false,"category":"","followups":[],"need_sections":[]}' };
   const callModel = async (extra) => {
     const q = text.split(/\s+/).length <= 5 && lastQ ? text + " " + lastQ : text;
-    const secs = retrieve(q, 6, extra);
-    const turns = [{ role: "user", content: systemPrompt(excerptText(secs), sectionIndex(q, secs)) + REMIND }, seed, ...history.slice(-10), { role: "user", content: text + REMIND }];
-    const r = await sample.json(turns, { signal: ctl.signal, cache: false, modelTier: "quick" });
-    return { res: r, titles: secs.map((s) => s.title) };
+    const full = thoroughOn() && canSendAll();
+    const secs = full ? corp() : retrieve(q, 6, extra);
+    const body = full ? fullCorpusText() : excerptText(secs);
+    const turns = [{ role: "user", content: systemPrompt(body, full ? "" : sectionIndex(q, secs), full) + REMIND }, seed, ...history.slice(-10), { role: "user", content: text + REMIND }];
+    const r = await sample.json(turns, { signal: ctl.signal, cache: false, ...(full ? {} : { modelTier: "quick" }) });
+    return { res: r, titles: secs.map((s) => s.title), full };
   };
   try {
-    let { res, titles } = await callModel([]);
-    if (res && res.answerable === false && !res.sensitive && Array.isArray(res.need_sections)) {
+    let { res, titles, full } = await callModel([]);
+    if (!full && res && res.answerable === false && !res.sensitive && Array.isArray(res.need_sections)) {
       const extra = res.need_sections.map(String).filter((x) => corp().some((s) => s.title.toLowerCase() === x.toLowerCase()) && !titles.some((y) => y.toLowerCase() === x.toLowerCase())).slice(0, 3);
       if (extra.length) ({ res } = await callModel(extra));
     }
@@ -2949,6 +2971,7 @@ async function ask(text) {
     if ($("hint").textContent !== ERR.not_granted) $("askBtn").disabled = false;
   }
 }
+(function () { const cb = $("thoroughCb"); const sync = () => { cb.checked = thoroughOn() && canSendAll(); cb.disabled = !canSendAll(); if (!canSendAll()) cb.parentElement.title = "The handbook is too large to send whole, so the assistant picks the most relevant parts."; }; cb.onchange = () => { setThorough(cb.checked); toast(cb.checked ? "Thorough mode on: slower, reads everything" : "Thorough mode off: faster"); }; sync(); window.syncThorough = sync; })();
 $("askBtn").onclick = () => ask($("q").value);
 $("stopBtn").onclick = () => ctl?.abort();
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask($("q").value); } });
