@@ -57,7 +57,7 @@ export function tokenize(text: string): string[] {
 export function retrieve(
   question: string,
   articles: Article[],
-  limit = 3,
+  limit = 5,
 ): RankedHit[] {
   const query = tokenize(question);
   if (query.length === 0) {

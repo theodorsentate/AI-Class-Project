@@ -5,15 +5,15 @@ export const articles: Article[] = [
     id: "first-day",
     title: "Your first day and first week",
     category: "Getting started",
-    tags: ["first day", "week one", "schedule", "badge", "lunch"],
-    summary: "Where to go, who to meet, and what “done” looks like after five days.",
-    body: "Arrive at the time in your offer letter. Check in at reception or with the person named in your welcome email. You will get a badge or remote login, a desk or home setup list, and a short tour of the tools we use. Week one success is simple: access works, paperwork is in, you know how to record time, and you have asked at least one question in this assistant. Meals, breaks, and building access follow local site rules posted on the intranet. If nobody is free when you arrive, write IT or People Ops from this tool. You do not need to wait on your manager to start.",
+    tags: ["first day", "week one", "schedule", "badge", "lunch", "eligibility"],
+    summary: "Where to go, who to meet, and what done looks like after five days.",
+    body: "Arrive at the time in your offer letter. Check in at reception or with the person named in your welcome email. You will get a badge or remote login, a desk or home setup list, and a short tour of the tools we use. Week one success is simple: access works, paperwork is in, you know how to record time, and you have asked at least one question in this assistant. Employment eligibility paperwork is due by business day 3 after your start date. Meals, breaks, and building access follow local site rules. If nobody is free when you arrive, write IT or People Ops from this tool. You do not need to wait on your manager to start.",
   },
   {
     id: "skip-manager",
     title: "Questions you do not have to take to your manager",
     category: "How this tool works",
-    tags: ["manager", "private", "hr", "people ops", "confidential", "awkward"],
+    tags: ["manager", "private", "hr", "people ops", "confidential", "awkward", "pay"],
     summary: "Use this assistant, People Ops, IT, or the hotline when a manager is the wrong first stop.",
     body: "You are not required to ask your manager about pay, benefits, medical leave, accommodations, interpersonal conflict, ethics, or IT lockouts. This assistant answers from the company handbook. Ask privately keeps the chat on your device unless you choose to send an escalation. People Ops and IT exist so routine and sensitive topics are not blocked by one person. If your manager is the subject of the question, skip them and use People Ops or the ethics hotline. Your job is not at risk for using the official channels described here.",
   },
@@ -23,7 +23,7 @@ export const articles: Article[] = [
     category: "Pay and time",
     tags: ["pay", "payroll", "timesheet", "direct deposit", "overtime", "wage"],
     summary: "When you are paid, how to record hours, and how to fix a mistake without a confrontation.",
-    body: "Pay dates and direct deposit are in your offer packet and the payroll article on the intranet. Hourly staff submit timesheets by the local deadline; salaried staff confirm exceptions only. Overtime follows the law for your location and role. If a paycheck looks wrong, write People Ops with the date and the amount you expected. Do not wait for a 1:1. Payroll errors are operations issues, not a personal dispute with your manager. Keep a copy of submitted hours until the correction appears.",
+    body: "Pay dates and direct deposit are in your offer packet and the Pay dates lookup table in this app. Hourly staff submit timesheets by the local deadline; salaried staff confirm exceptions only. Overtime follows the law for your location and role. If a paycheck looks wrong, write People Ops with the date and the amount you expected. Do not wait for a 1:1. Payroll errors are operations issues, not a personal dispute with your manager. Keep a copy of submitted hours until the correction appears.",
   },
   {
     id: "time-off",
@@ -31,15 +31,15 @@ export const articles: Article[] = [
     category: "Pay and time",
     tags: ["pto", "vacation", "sick", "leave", "holiday", "time off"],
     summary: "How to request leave and what happens if you are unwell on a workday.",
-    body: "Request planned time off in the timekeeping system as early as you can. Sick time is for when you cannot work safely or well; log it when you return or the same day if the system allows. Company holidays are listed on the intranet calendar. Parental, medical, and legally protected leave is handled by People Ops, not informal manager deals. If you are unsure which bucket applies, ask this assistant or email People Ops. A manager can plan coverage; they do not invent the policy.",
+    body: "Request planned time off in the timekeeping system as early as you can. Sick time is for when you cannot work safely or well; log it when you return or the same day if the system allows. Company holidays are listed in the Holidays lookup table. Parental, medical, and legally protected leave is handled by People Ops, not informal manager deals. If you are unsure which bucket applies, ask this assistant or email People Ops. A manager can plan coverage; they do not invent the policy.",
   },
   {
     id: "benefits",
     title: "Benefits enrollment",
     category: "People Ops",
-    tags: ["benefits", "health", "insurance", "401k", "retirement", "deadline"],
+    tags: ["benefits", "health", "insurance", "401k", "retirement", "deadline", "eap"],
     summary: "Health, retirement, and related plans, including the deadline that is easy to miss.",
-    body: "New hires usually have a short window after the start date to elect medical, dental, vision, and retirement contributions. Missing the window can mean waiting until the next open enrollment unless a qualifying life event applies. Plan summaries live with People Ops. This assistant will not choose a plan for you. It will tell you who to email and what documents you need. Beneficiaries and dependents should be updated in the same portal you used to enroll.",
+    body: "New hires elect medical, dental, vision, and retirement contributions in the benefits portal. At Northshore Goods, benefits enrollment is due by business day 10 after your start date. Missing the window can mean waiting until the next open enrollment unless a qualifying life event applies. Plan comparisons live in the Benefits lookup table. This assistant will not choose a plan for you. The Employee Assistance Program (EAP) is a free, confidential counseling benefit for you and your household at 1-800-555-0199. Beneficiaries and dependents should be updated in the same portal you used to enroll.",
   },
   {
     id: "it-setup",
@@ -47,7 +47,7 @@ export const articles: Article[] = [
     category: "IT",
     tags: ["it", "password", "mfa", "laptop", "email", "vpn", "lockout", "locked", "software"],
     summary: "First login, lost passwords, approved software, and who resets access.",
-    body: "IT provisions email, chat, and VPN. Turn on multi-factor authentication the first day. If you are locked out, use the password portal or email IT from a personal address listed in your file. Managers cannot reset most credentials. Only approved software may be installed; request new tools through IT. Lost or stolen devices must be reported to IT the same day. Home office equipment follows the remote work article if your role is hybrid or remote.",
+    body: "IT provisions email, chat, and VPN. Turn on multi-factor authentication by business day 1 after your start date. If you are locked out, use the password portal or email IT from a personal address listed in your file. Managers cannot reset most credentials. Only approved software may be installed; request new tools through IT. Lost or stolen devices must be reported to IT the same day. Home office equipment follows the remote work article if your role is hybrid or remote.",
   },
   {
     id: "respectful-workplace",
@@ -55,7 +55,7 @@ export const articles: Article[] = [
     category: "Safety and ethics",
     tags: ["harassment", "discrimination", "bully", "retaliation", "ethics", "hotline"],
     summary: "How to report harassment or discrimination without going through your manager.",
-    body: "Harassment, discrimination, and retaliation are prohibited. Report to People Ops or the ethics hotline. You may skip your manager, especially if they are involved. Retaliation for a good-faith report is itself a violation. If you are in immediate danger, contact local emergency services first. This assistant will always surface the hotline for these topics. You do not need a perfect story before you write; dates, names, and what happened are enough to start.",
+    body: "Harassment, discrimination, and retaliation are prohibited. Report to People Ops or the ethics hotline. You may skip your manager, especially if they are involved. Retaliation for a good-faith report is itself a violation. If you are in immediate danger, contact local emergency services first. This assistant will always surface support resources for these topics. You do not need a perfect story before you write; dates, names, and what happened are enough to start.",
   },
   {
     id: "accommodations",
@@ -78,7 +78,7 @@ export const articles: Article[] = [
     title: "The first 90 days",
     category: "Getting started",
     tags: ["probation", "90 days", "review", "goals", "training"],
-    summary: "What “settling in” includes besides doing assigned tasks.",
+    summary: "What settling in includes besides doing assigned tasks.",
     body: "The first 90 days are for learning the work, the tools, and the people. You should know who owns quality, who owns customers or internal users, and how work is requested. Training assigned in your checklist is required. A 30/60/90 conversation is normal; it is not only criticism. If you are missing access or training, log it here or with IT so the delay is visible. Performance concerns are discussed with your manager and People Ops together, not by rumor.",
   },
   {
@@ -101,4 +101,8 @@ export const articles: Article[] = [
 
 export function getArticle(id: string): Article | undefined {
   return articles.find((article) => article.id === id);
+}
+
+export function setArticles(next: Article[]): void {
+  articles.splice(0, articles.length, ...next);
 }
