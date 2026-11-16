@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { people, peopleNote } from "@/lib/people";
+import { Input, Select } from "@/components/ui/Input";
+import { EmptyState, PageHeader } from "@/components/ui/Card";
 
 export default function PeoplePage() {
   const [query, setQuery] = useState("");
@@ -20,32 +22,32 @@ export default function PeoplePage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-semibold">People directory</h1>
-        <p className="mt-3 text-[var(--muted)] leading-7">{peopleNote}</p>
-      </header>
+      <PageHeader title="People directory" description={peopleNote} />
       <div className="flex flex-wrap gap-4">
         <label className="text-sm font-semibold">
           Search
-          <input
-            className="mt-2 block rounded-xl border border-[var(--line)] p-3"
+          <Input
+            className="mt-2 block"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
         <label className="text-sm font-semibold">
           Team
-          <select
-            className="mt-2 block rounded-xl border border-[var(--line)] p-3"
+          <Select
+            className="mt-2 block"
             value={team}
             onChange={(event) => setTeam(event.target.value)}
           >
             {teams.map((item) => (
               <option key={item}>{item}</option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
+      {rows.length === 0 ? (
+        <EmptyState title="No matching people" body="Clear the search or pick another team." />
+      ) : null}
       <ul className="grid gap-4 md:grid-cols-2">
         {rows.map((person) => (
           <li key={person.id} className="card p-5">

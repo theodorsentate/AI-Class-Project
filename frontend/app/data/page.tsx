@@ -1,12 +1,10 @@
 import { tables, tablesNote } from "@/lib/tables";
+import { PageHeader } from "@/components/ui/Card";
 
 export default function DataPage() {
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-3xl font-semibold">Lookup tables</h1>
-        <p className="mt-3 text-[var(--muted)] leading-7">{tablesNote}</p>
-      </header>
+      <PageHeader title="Lookup tables" description={tablesNote} />
       {tables.map((table) => (
         <section key={table.id} className="card overflow-x-auto p-5">
           <h2 className="text-xl font-semibold">{table.title}</h2>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { loadStartDate, saveStartDate } from "@/lib/hire";
 import { businessDayNumber } from "@/lib/dates";
+import { Input } from "@/components/ui/Input";
 
 export function StartDateField() {
   const [start, setStart] = useState("");
@@ -18,10 +19,10 @@ export function StartDateField() {
       <label htmlFor="start-date" className="block text-sm font-semibold">
         Your start date
       </label>
-      <input
+      <Input
         id="start-date"
         type="date"
-        className="mt-2 rounded-xl border border-[var(--line)] p-3"
+        className="mt-2 max-w-xs"
         value={start}
         onChange={(event) => {
           setStart(event.target.value);
