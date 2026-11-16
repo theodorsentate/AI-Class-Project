@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { safeLocal } from "@/lib/safe-storage";
 
 type Theme = "light" | "dark" | "system";
 
@@ -21,7 +22,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem("harbor-theme") as Theme | null;
+      const saved = safeLocal.getItem("harbor-theme") as Theme | null;
       const next = saved === "light" || saved === "dark" || saved === "system" ? saved : "system";
       setThemeState(next);
       apply(next);
@@ -33,7 +34,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   function setTheme(next: Theme) {
     setThemeState(next);
     try {
-      window.localStorage.setItem("harbor-theme", next);
+      safeLocal.setItem("harbor-theme", next);
     } catch {
       // Storage can be unavailable.
     }
