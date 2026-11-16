@@ -1,0 +1,17 @@
+{
+  "name": "northshore-demo-wrapper",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "vite build" },
+  "dependencies": { "lucide-react": "^1.70.0", "react": "19.2.8", "react-dom": "19.2.8" },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vite": "^6",
+    "vite-plugin-singlefile": "^2"
+  }
+}

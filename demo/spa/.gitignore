@@ -1,0 +1,8 @@
+node_modules
+dist
+# Copied from ../../frontend by build.sh. Do not edit these here.
+src/app
+src/components
+src/context
+src/lib
+public
