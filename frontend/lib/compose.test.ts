@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bestSentences, composeReply } from "./compose";
+import { bestSentences, composeReply, promoteForSafety } from "./compose";
 import { defaultCompany } from "./company";
 import { articles } from "./knowledge";
 import { retrieve } from "./retrieve";
@@ -56,5 +56,24 @@ describe("composeReply", () => {
   it("keeps matched sentences in their original order", () => {
     const text = "Alpha one. Beta two. Gamma three. Delta four.";
     expect(bestSentences(text, "delta alpha", 2)).toBe("Alpha one. Delta four.");
+  });
+
+  it("cites the harassment section first for a personal harassment report", () => {
+    const q = "My manager keeps harassing me";
+    const reply = composeReply(q, retrieve(q, articles), defaultCompany);
+    expect(reply.sourceRefs[0]?.id).toBe("respectful-workplace");
+    expect(reply.escalate).toBe(true);
+  });
+
+  it("cites the injury section for a work injury", () => {
+    const q = "I got hurt at work";
+    const reply = composeReply(q, retrieve(q, articles), defaultCompany);
+    expect(reply.sourceRefs[0]?.id).toBe("work-injury");
+  });
+
+  it("does not change the order when the question is not sensitive", () => {
+    const q = "How do I request time off?";
+    const hits = retrieve(q, articles);
+    expect(promoteForSafety(hits, undefined, q)).toEqual(hits);
   });
 });

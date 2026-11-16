@@ -2,27 +2,8 @@ import { defaultCompany } from "@/lib/company";
 import { excerptText } from "@/lib/corpus";
 import { articles } from "@/lib/knowledge";
 import { retrieve } from "@/lib/retrieve";
+import { DRAFT_TOPICS, fallbackTemplate } from "@/lib/draft";
 import type { CompanyProfile } from "@/lib/types";
-
-const TOPICS: Record<string, { team: "people" | "it"; prompt: string }> = {
-  benefits: { team: "people", prompt: "benefits enrollment question" },
-  access: { team: "it", prompt: "laptop or account access issue" },
-  schedule: { team: "people", prompt: "work schedule question" },
-  timeoff: { team: "people", prompt: "time off request process" },
-};
-
-export function fallbackTemplate(
-  team: "people" | "it",
-  company: CompanyProfile,
-  need: string,
-): { subject: string; body: string } {
-  const to = team === "people" ? company.peopleEmail : company.itEmail;
-  return {
-    subject: `New hire request: ${need.slice(0, 60) || "help"}`,
-    body: `Hello,\n\nI am a new hire at ${company.name}. I need help with: ${need || "[describe what you need]"}.\n\nPlease reply to this note. My manager is not copied.\n\nThank you\n`,
-    to,
-  } as { subject: string; body: string };
-}
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
@@ -31,7 +12,7 @@ export async function POST(request: Request) {
     topic?: string;
     company?: CompanyProfile;
   };
-  const topic = body.topic ? TOPICS[body.topic] : null;
+  const topic = body.topic ? DRAFT_TOPICS[body.topic] : null;
   const team = topic?.team ?? body.team ?? "people";
   const company = { ...defaultCompany, ...body.company };
   const need = (body.need || topic?.prompt || "").trim();

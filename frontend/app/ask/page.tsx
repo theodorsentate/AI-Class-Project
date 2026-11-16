@@ -109,7 +109,8 @@ function AskForm() {
   return (
     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
       <section>
-        <h1 className="text-3xl font-semibold">Ask privately</h1>
+        <span className="eyebrow-rule" aria-hidden />
+        <h1 className="text-3xl">Ask privately</h1>
         <p className="mt-3 max-w-2xl text-[var(--muted)] leading-7">
           Type a question in everyday language. The assistant searches the
           company handbook and links the sections it used. Turn confidential on

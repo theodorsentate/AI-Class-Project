@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Source_Sans_3 } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { CompanyProvider } from "@/context/CompanyContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ToastProvider } from "@/context/ToastContext";
 import "./globals.css";
-
-const sourceSans = Source_Sans_3({
-  variable: "--font-source",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Employee onboarding assistant",
@@ -22,7 +15,7 @@ const themeBoot = `try{var t=localStorage.getItem('harbor-theme');if(t==='dark'|
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${sourceSans.variable} h-full antialiased`}>
+    <html lang="en" className={`h-full antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
       </head>

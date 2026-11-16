@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { PageHeader } from "@/components/ui/Card";
 import { useToast } from "@/context/ToastContext";
+import { localDraft } from "@/lib/draft";
 
 const teams = [
   { id: "people", label: "People Ops", time: "Usually one business day" },
@@ -122,21 +123,29 @@ function EscalateForm() {
                 size="sm"
                 onClick={async () => {
                   setTeam(id === "access" ? "it" : "people");
-                  const response = await fetch("/api/draft", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      topic: id,
-                      need: message,
-                      company,
-                      team: id === "access" ? "it" : "people",
-                    }),
-                  });
-                  if (response.ok) {
-                    const draft = (await response.json()) as { subject: string; body: string };
-                    setSubject(draft.subject);
-                    setMessage(draft.body);
+                  let draft: { subject: string; body: string } | null = null;
+                  try {
+                    const response = await fetch("/api/draft", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        topic: id,
+                        need: message,
+                        company,
+                        team: id === "access" ? "it" : "people",
+                      }),
+                    });
+                    if (response.ok) {
+                      draft = (await response.json()) as { subject: string; body: string };
+                    }
+                  } catch {
+                    // Fall through to the local template.
                   }
+                  if (!draft || !draft.subject || !draft.body) {
+                    draft = localDraft(id, message, company);
+                  }
+                  setSubject(draft.subject);
+                  setMessage(draft.body);
                 }}
               >
                 {label}

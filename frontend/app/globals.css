@@ -1,27 +1,30 @@
 @import "tailwindcss";
+@import "@fontsource-variable/archivo/standard.css";
 
 :root {
-  --navy: #032147;
-  --blue: #147096;
-  --blue-bright: #209dd7;
-  --purple: #753991;
-  --yellow: #ecad0a;
-  --paper: #f6f4ef;
+  /* Burgee-style palette: deep navy headings, steady blue actions, one brass accent. */
+  --navy: #14355a;
+  --ink: #243142;
+  --blue: #1d4f8c;
+  --blue-bright: #1d4f8c;
+  --purple: #14355a;
+  --yellow: #b4873c;
+  --paper: #f6f8fb;
   --surface: #ffffff;
-  --muted: #3d4a57;
-  --line: #cfc8bb;
-  --wash: #ece7dc;
+  --muted: #5b6b80;
+  --line: #e3e9f0;
+  --wash: #eef2f7;
   --success: #0f6b4c;
   --warning: #8a5a00;
   --danger: #9b1c2c;
-  --info: #147096;
-  --btn: #147096;
+  --info: #1d4f8c;
+  --btn: #1d4f8c;
   --on-btn: #ffffff;
-  --btn-ai: #753991;
+  --btn-ai: #14355a;
   --on-btn-ai: #ffffff;
   --btn-danger: #9b1c2c;
-  --shadow: 0 1px 2px rgb(3 33 71 / 0.08), 0 8px 24px rgb(3 33 71 / 0.06);
-  --radius: 12px;
+  --shadow: 0 1px 2px rgb(20 53 90 / 0.05);
+  --radius: 10px;
   --duration: 160ms;
   --z-nav: 30;
   --z-dialog: 40;
@@ -29,26 +32,27 @@
 }
 
 html.dark {
-  --navy: #e8eef5;
-  --blue: #6ec4e8;
-  --blue-bright: #6ec4e8;
-  --purple: #c592d8;
-  --yellow: #ecad0a;
-  --paper: #071525;
-  --surface: #0e2136;
-  --muted: #c5d0db;
-  --line: #2a415c;
-  --wash: #123049;
+  --navy: #e6edf6;
+  --ink: #d5deea;
+  --blue: #8db8ea;
+  --blue-bright: #8db8ea;
+  --purple: #8db8ea;
+  --yellow: #c99a4b;
+  --paper: #0b1b30;
+  --surface: #102640;
+  --muted: #aebccd;
+  --line: #24405f;
+  --wash: #16314f;
   --success: #7dcea0;
   --warning: #f0c674;
   --danger: #f0a0a8;
-  --info: #6ec4e8;
-  --btn: #147096;
+  --info: #8db8ea;
+  --btn: #2a64ad;
   --on-btn: #ffffff;
-  --btn-ai: #753991;
+  --btn-ai: #2a64ad;
   --on-btn-ai: #ffffff;
   --btn-danger: #9b1c2c;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.35);
   color-scheme: dark;
 }
 
@@ -65,7 +69,12 @@ html.dark {
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
-  --font-sans: var(--font-source);
+  --font-sans: "Archivo Variable", "Archivo", "Segoe UI", system-ui, sans-serif;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--btn);
 }
 
 html,
@@ -76,10 +85,38 @@ body {
 
 body {
   background: var(--paper);
-  color: var(--navy);
-  font-family: var(--font-source), "Segoe UI", sans-serif;
+  color: var(--ink);
+  font-family: "Archivo Variable", "Archivo", "Segoe UI", system-ui, sans-serif;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.55;
+}
+
+/* Expanded, heavy headings in navy are the signature of the look. */
+h1,
+h2,
+h3 {
+  color: var(--navy);
+  font-stretch: 112%;
+  letter-spacing: -0.005em;
+}
+h1 {
+  font-stretch: 116%;
+  font-weight: 820;
+}
+h2 {
+  font-weight: 760;
+}
+h3 {
+  font-weight: 700;
+}
+
+.eyebrow-rule {
+  display: block;
+  width: 28px;
+  height: 3px;
+  margin-bottom: 12px;
+  border-radius: 2px;
+  background: var(--yellow);
 }
 
 @media (prefers-reduced-motion: reduce) {

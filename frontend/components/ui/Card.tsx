@@ -66,7 +66,8 @@ export function PageHeader({
 }) {
   return (
     <header className="max-w-[72ch]">
-      <h1 className="text-3xl font-semibold tracking-tight text-[var(--navy)]">{title}</h1>
+      <span className="eyebrow-rule" aria-hidden />
+      <h1 className="text-3xl tracking-tight text-[var(--navy)]">{title}</h1>
       {description ? <p className="mt-3 text-base leading-7 text-[var(--muted)]">{description}</p> : null}
     </header>
   );

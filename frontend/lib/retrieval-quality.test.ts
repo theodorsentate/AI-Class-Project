@@ -14,6 +14,7 @@ const Q: [string, string][] = [
  ["I disagree with my coworker","disagreements"],["I feel overwhelmed and stressed","wellbeing"],["I lost my badge","building-access"],["Where do I park?","building-access"],
  ["Who do I contact for payroll?","who-to-ask"],["What do I need to do in my first week?","first-day"],["When do I get paid?","pay"],["How do I request an accommodation?","accommodations"],
  ["Can I work from home?","hybrid-work"],["What if there is a fire?","emergency"],["How do I report harassment?","respectful-workplace"],["What happens in the first 90 days?","first-90"],
+ ["My manager keeps harassing me","respectful-workplace"],["I was bullied by a coworker","respectful-workplace"],
 ];
 it("finds the right handbook section for everyday questions (no API key)", () => {
   let top1 = 0;

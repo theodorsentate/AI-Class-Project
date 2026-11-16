@@ -1,3 +1,4 @@
+import { getArticle } from "./knowledge";
 import { tokenize } from "./retrieve";
 import { classify } from "./safety";
 import type { AssistantReply, CompanyProfile, RankedHit } from "./types";
@@ -44,6 +45,29 @@ export function bestSentences(text: string, question: string, count: number): st
     .join(" ");
 }
 
+/**
+ * When the safety check recognizes the topic, put the handbook section for that topic first.
+ * A keyword match can otherwise rank an unrelated page higher (for example "manager" in
+ * "My manager keeps harassing me"). The section is only used if it exists in the handbook.
+ */
+export function promoteForSafety(hits: RankedHit[], cat: string | undefined, question: string): RankedHit[] {
+  if (!cat) return hits;
+  const targets: Record<string, string> = {
+    harassment: "respectful-workplace",
+    discrimination: "respectful-workplace",
+    mental_health: "wellbeing",
+    safety: "emergency",
+    medical: /hurt|injur/i.test(question) ? "work-injury" : "accommodations",
+  };
+  const id = targets[cat];
+  const article = id ? getArticle(id) : undefined;
+  if (!article) return hits;
+  const existing = hits.find((hit) => hit.article.id === article.id);
+  const floor = Math.max(hits[0]?.score ?? 0, LOW_CONFIDENCE);
+  const promoted: RankedHit = { article, score: Math.max(existing?.score ?? 0, floor) };
+  return [promoted, ...hits.filter((hit) => hit.article.id !== article.id)];
+}
+
 export function composeReply(
   question: string,
   hits: RankedHit[],
@@ -52,7 +76,8 @@ export function composeReply(
   const safety = classify(question);
   const sensitive = Boolean(safety);
   const crisis = Boolean(safety?.crisis);
-  const top = hits[0];
+  const ranked = sensitive ? promoteForSafety(hits, safety?.cat, question) : hits;
+  const top = ranked[0];
 
   if (crisis) {
     return {
@@ -80,7 +105,7 @@ export function composeReply(
     };
   }
 
-  const confident = hits.filter((hit) => hit.score >= LOW_CONFIDENCE);
+  const confident = ranked.filter((hit) => hit.score >= LOW_CONFIDENCE);
   const extras = confident.slice(1).map((hit) => hit.article.title);
 
   let text = `${bestSentences(top.article.body, question, 3)} Source: ${top.article.title}.`;
