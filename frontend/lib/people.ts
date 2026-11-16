@@ -43,4 +43,28 @@ export const people: Person[] = [
     email: "safety@northshore.example",
     handles: "Building safety, after-hours issues, incident reports",
   },
+  {
+    id: "morgan-blake",
+    name: "Morgan Blake",
+    role: "Payroll Specialist",
+    team: "People Ops",
+    email: "people@northshore.example",
+    handles: "Paycheck questions, timesheet corrections, expense reimbursement status",
+  },
+  {
+    id: "taylor-brooks",
+    name: "Taylor Brooks",
+    role: "Learning and Development Partner",
+    team: "People Ops",
+    email: "people@northshore.example",
+    handles: "Required training, the learning budget, internal moves and job postings",
+  },
+  {
+    id: "casey-nguyen",
+    name: "Casey Nguyen",
+    role: "Security Analyst",
+    team: "IT",
+    email: "it@northshore.example",
+    handles: "Phishing reports, suspected data incidents, lost or stolen devices",
+  },
 ];

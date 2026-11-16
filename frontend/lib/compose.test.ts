@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { composeReply } from "./compose";
+import { bestSentences, composeReply } from "./compose";
 import { defaultCompany } from "./company";
 import { articles } from "./knowledge";
 import { retrieve } from "./retrieve";
@@ -33,5 +33,28 @@ describe("composeReply", () => {
     const reply = composeReply("My manager keeps harassing me", hits, defaultCompany);
     expect(reply.sensitive).toBe(true);
     expect(reply.escalate).toBe(true);
+  });
+
+  it("quotes the sentence that answers the question, not just the opening of the article", () => {
+    const q = "How many bereavement days do I get?";
+    const reply = composeReply(q, retrieve(q, articles), defaultCompany);
+    expect(reply.text).toContain("3 paid days");
+    expect(reply.sourceRefs[0]?.id).toBe("protected-leave");
+  });
+
+  it("finds the dollar limit for a gift question", () => {
+    const q = "Can a vendor give me a gift?";
+    const reply = composeReply(q, retrieve(q, articles), defaultCompany);
+    expect(reply.text).toContain("$50");
+  });
+
+  it("falls back to the opening sentences when no sentence matches", () => {
+    const text = "First sentence here. Second sentence here. Third sentence here. Fourth sentence here.";
+    expect(bestSentences(text, "zebra quokka", 2)).toBe("First sentence here. Second sentence here.");
+  });
+
+  it("keeps matched sentences in their original order", () => {
+    const text = "Alpha one. Beta two. Gamma three. Delta four.";
+    expect(bestSentences(text, "delta alpha", 2)).toBe("Alpha one. Delta four.");
   });
 });

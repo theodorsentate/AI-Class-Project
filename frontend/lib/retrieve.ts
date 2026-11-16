@@ -64,18 +64,34 @@ export function retrieve(
     return [];
   }
 
-  const ranked = articles.map((article) => {
-    const titleTok = tokenize(article.title);
-    const tagTok = tokenize(article.tags.join(" "));
-    const bodyTok = tokenize(`${article.summary} ${article.body}`);
+  // Rare words matter more than common ones: "bereavement" should beat "days".
+  const docs = articles.map((article) => ({
+    article,
+    titleTok: tokenize(article.title),
+    tagTok: tokenize(article.tags.join(" ")),
+    bodyTok: tokenize(`${article.summary} ${article.body}`),
+  }));
+  const total = Math.max(docs.length, 1);
+  const idf = new Map<string, number>();
+  for (const token of new Set(query)) {
+    const df = docs.filter(
+      (d) => d.titleTok.includes(token) || d.tagTok.includes(token) || d.bodyTok.includes(token),
+    ).length;
+    idf.set(token, Math.log(1 + total / (df + 0.5)));
+  }
+
+  let max = 0;
+  for (const token of query) max += (idf.get(token) ?? 0) * 6;
+
+  const ranked = docs.map((d) => {
     let score = 0;
     for (const token of query) {
-      if (titleTok.includes(token)) score += 3;
-      if (tagTok.includes(token)) score += 2;
-      if (bodyTok.includes(token)) score += 1;
+      const weight = idf.get(token) ?? 0;
+      if (d.titleTok.includes(token)) score += 3 * weight;
+      if (d.tagTok.includes(token)) score += 2 * weight;
+      if (d.bodyTok.includes(token)) score += 1 * weight;
     }
-    const max = query.length * 6;
-    return { article, score: score / max };
+    return { article: d.article, score: max > 0 ? score / max : 0 };
   });
 
   return ranked
