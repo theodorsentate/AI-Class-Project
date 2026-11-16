@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Input";
 import { useToast } from "@/context/ToastContext";
 import type { AssistantReply } from "@/lib/types";
+import { safeLocal, safeSession } from "@/lib/safe-storage";
 
 function AskForm() {
   const { company } = useCompany();
@@ -34,7 +35,7 @@ function AskForm() {
       setQuestion(preset);
     }
     try {
-      const saved = sessionStorage.getItem("harbor-ask-history");
+      const saved = safeSession.getItem("harbor-ask-history");
       if (saved) {
         setHistory(JSON.parse(saved) as { q: string; a: string }[]);
       }
@@ -45,7 +46,7 @@ function AskForm() {
 
   useEffect(() => {
     try {
-      sessionStorage.setItem("harbor-ask-history", JSON.stringify(history));
+      safeSession.setItem("harbor-ask-history", JSON.stringify(history));
     } catch {
       // Ignore.
     }
@@ -71,7 +72,7 @@ function AskForm() {
     let next = composeReply(trimmed, hits, company);
     let done: Record<string, boolean> = {};
     try {
-      done = JSON.parse(window.localStorage.getItem(CHECKLIST_KEY) || "{}");
+      done = JSON.parse(safeLocal.getItem(CHECKLIST_KEY) || "{}");
     } catch {
       done = {};
     }
@@ -301,7 +302,7 @@ function AskForm() {
                   setHistory([]);
                   setQuestion("");
                   try {
-                    sessionStorage.removeItem("harbor-ask-history");
+                    safeSession.removeItem("harbor-ask-history");
                   } catch {
                     // Ignore.
                   }

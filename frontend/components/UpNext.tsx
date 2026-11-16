@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CHECKLIST_KEY, defaultChecklist } from "@/lib/checklist";
 import { addBusinessDays, businessDayNumber, formatDueBadge } from "@/lib/dates";
 import { loadStartDate } from "@/lib/hire";
+import { safeLocal } from "@/lib/safe-storage";
 
 export function UpNext() {
   const [start, setStart] = useState("");
@@ -13,7 +14,7 @@ export function UpNext() {
   useEffect(() => {
     setStart(loadStartDate());
     try {
-      setDone(JSON.parse(window.localStorage.getItem(CHECKLIST_KEY) || "{}"));
+      setDone(JSON.parse(safeLocal.getItem(CHECKLIST_KEY) || "{}"));
     } catch {
       setDone({});
     }

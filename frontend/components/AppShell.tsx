@@ -8,6 +8,7 @@ import { AppFooter, Breadcrumbs, GetHelpLink, SearchControl, ThemeToggle } from 
 import { useCompany } from "@/context/CompanyContext";
 import { HANDBOOK_KEY, sanitizeHandbook } from "@/lib/handbook-validate";
 import { setArticles } from "@/lib/knowledge";
+import { safeLocal } from "@/lib/safe-storage";
 
 const groups = [
   {
@@ -79,7 +80,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = window.localStorage.getItem(HANDBOOK_KEY);
+      const raw = safeLocal.getItem(HANDBOOK_KEY);
       if (!raw) {
         return;
       }

@@ -7,6 +7,7 @@ import { loadStartDate, saveStartDate } from "@/lib/hire";
 import { useCompany } from "@/context/CompanyContext";
 import { Input } from "@/components/ui/Input";
 import { Alert, PageHeader } from "@/components/ui/Card";
+import { safeLocal } from "@/lib/safe-storage";
 
 const sections = ["You", "IT", "People Ops"] as const;
 
@@ -17,7 +18,7 @@ export default function WeekPage() {
   const [start, setStart] = useState("");
 
   useEffect(() => {
-    const raw = window.localStorage.getItem(CHECKLIST_KEY);
+    const raw = safeLocal.getItem(CHECKLIST_KEY);
     if (raw) {
       setDone(JSON.parse(raw));
     }
@@ -28,7 +29,7 @@ export default function WeekPage() {
   function toggle(id: string) {
     setDone((prev) => {
       const next = { ...prev, [id]: !prev[id] };
-      window.localStorage.setItem(CHECKLIST_KEY, JSON.stringify(next));
+      safeLocal.setItem(CHECKLIST_KEY, JSON.stringify(next));
       return next;
     });
   }

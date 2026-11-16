@@ -9,6 +9,7 @@ import type { CompanyProfile } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { PageHeader } from "@/components/ui/Card";
+import { safeLocal } from "@/lib/safe-storage";
 
 const fields: { key: keyof CompanyProfile; label: string; hint: string }[] = [
   { key: "name", label: "Company name", hint: "Shown in the header and answers" },
@@ -110,7 +111,7 @@ export default function SetupPage() {
           }
           setArticles(parsed.articles);
           try {
-            window.localStorage.setItem(HANDBOOK_KEY, JSON.stringify({ sections: parsed.articles }));
+            safeLocal.setItem(HANDBOOK_KEY, JSON.stringify({ sections: parsed.articles }));
           } catch {
             setHandbookMessage("Saved in memory only. This browser blocked local storage.");
             return;

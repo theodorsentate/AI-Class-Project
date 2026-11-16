@@ -1,4 +1,5 @@
 import type { CompanyProfile } from "./types";
+import { safeLocal } from "@/lib/safe-storage";
 
 export const STORAGE_KEY = "harbor-company-v1";
 
@@ -16,7 +17,7 @@ export function loadCompany(): CompanyProfile {
   if (typeof window === "undefined") {
     return defaultCompany;
   }
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  const raw = safeLocal.getItem(STORAGE_KEY);
   if (!raw) {
     return defaultCompany;
   }
@@ -24,5 +25,5 @@ export function loadCompany(): CompanyProfile {
 }
 
 export function saveCompany(profile: CompanyProfile): void {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+  safeLocal.setItem(STORAGE_KEY, JSON.stringify(profile));
 }
