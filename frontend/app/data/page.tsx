@@ -24,7 +24,7 @@ export default function DataPage() {
               {table.rows.map((row) => (
                 <tr key={row.join("-")}>
                   {row.map((cell) => (
-                    <td key={cell} className="py-2 pr-4">
+                    <td key={cell} className={`py-2 pr-4 ${/^\d{4}-\d{2}-\d{2}$/.test(cell) ? "whitespace-nowrap" : ""}`}>
                       {cell}
                     </td>
                   ))}

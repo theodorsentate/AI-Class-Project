@@ -117,8 +117,27 @@ function AskForm() {
           company handbook and links the sections it used. Turn confidential on
           to keep the thread off the local history.
         </p>
+        <div className="mt-6">
+          <p className="text-sm font-semibold">Try asking</p>
+        <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Suggested questions">
+          {suggested.map((item) => (
+            <Button
+              key={item}
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setQuestion(item);
+                void submit(item);
+              }}
+            >
+              {item}
+            </Button>
+          ))}
+        </div>
+        </div>
         <form
-          className="sticky bottom-16 z-10 mt-6 space-y-4 rounded-[var(--radius)] bg-[var(--paper)] py-3 md:bottom-4"
+          className="mt-6 space-y-4"
           onSubmit={(event) => {
             event.preventDefault();
             setStopped(false);
@@ -157,6 +176,9 @@ function AskForm() {
               Confidential: do not save this question on this device
             </label>
           </div>
+          <details className="text-sm">
+            <summary className="cursor-pointer font-semibold text-[var(--blue)]">More options</summary>
+            <div className="mt-3">
           <div className="flex items-center gap-3">
             <input
               id="thorough"
@@ -169,9 +191,11 @@ function AskForm() {
               className="size-5"
             />
             <label htmlFor="thorough" className="text-sm leading-6">
-              Read the whole handbook when an API key is set
+              Read the whole handbook when an AI key is set (more thorough, a little slower)
             </label>
           </div>
+            </div>
+          </details>
           <div className="flex flex-wrap gap-2">
             <Button type="submit" variant="ai" loading={pending} disabled={pending}>
               Get an answer
@@ -193,22 +217,6 @@ function AskForm() {
             </p>
           ) : null}
         </form>
-        <div className="mt-4 flex flex-wrap gap-2" aria-label="Suggested questions">
-          {suggested.map((item) => (
-            <Button
-              key={item}
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setQuestion(item);
-                void submit(item);
-              }}
-            >
-              {item}
-            </Button>
-          ))}
-        </div>
         <div className="card mt-8 p-6" aria-live="polite" aria-atomic="true">
           <h2 className="text-lg font-semibold">Answer</h2>
           {reply ? (
@@ -285,9 +293,8 @@ function AskForm() {
                 >
                   Copy answer
                 </Button>
-                <span className="text-sm">Was this helpful?</span>
-                <Link href={`/escalate?q=${encodeURIComponent(question)}`} className="text-sm font-semibold text-[var(--blue)]">
-                  Talk to a person
+                <Link href={`/escalate?q=${encodeURIComponent(question)}`} className="inline-flex min-h-9 items-center text-sm font-semibold text-[var(--blue)] underline-offset-4 hover:underline">
+                  Not what you needed? Email a person
                 </Link>
               </div>
               {reply.escalate && !reply.crisis ? (

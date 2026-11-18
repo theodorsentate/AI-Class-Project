@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HelpCircle, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { getArticle } from "@/lib/knowledge";
 import { Button } from "@/components/ui/Button";
 import { SearchDialog } from "@/components/SearchDialog";
 
@@ -24,7 +25,7 @@ export function ThemeToggle() {
       onClick={() => setTheme(dark ? "light" : "dark")}
     >
       {dark ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
-      {dark ? "Light" : "Dark"}
+      <span className="hidden sm:inline">{dark ? "Light" : "Dark"}</span>
     </Button>
   );
 }
@@ -33,7 +34,8 @@ export function GetHelpLink() {
   return (
     <Link href="/escalate" className="inline-flex min-h-11 items-center gap-2 font-semibold text-[var(--blue)] underline-offset-2 hover:underline">
       <HelpCircle size={18} aria-hidden />
-      Get help
+      <span className="hidden sm:inline">Get help</span>
+      <span className="sr-only sm:hidden">Get help</span>
     </Link>
   );
 }
@@ -49,14 +51,16 @@ export function Breadcrumbs() {
   }
   return (
     <nav aria-label="Breadcrumb" className="mb-4 text-sm">
-      <ol className="flex gap-2">
+      <ol className="flex min-w-0 gap-2">
         <li>
           <Link href="/library" className="text-[var(--blue)]">
             Handbook
           </Link>
         </li>
         <li aria-hidden>/</li>
-        <li>Article</li>
+        <li aria-current="page" className="min-w-0 truncate">
+          {getArticle(pathname.split("/")[2])?.title ?? "Article"}
+        </li>
       </ol>
     </nav>
   );

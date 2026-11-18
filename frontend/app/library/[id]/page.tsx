@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { articles, getArticle } from "@/lib/knowledge";
+import { Button } from "@/components/ui/Button";
 import { PrintArticle } from "@/components/PrintArticle";
 
 export function generateStaticParams() {
@@ -25,7 +26,7 @@ export default async function ArticlePage({
   const next = index < siblings.length - 1 ? siblings[index + 1] : undefined;
 
   return (
-    <article className="mx-auto max-w-3xl">
+    <article className="max-w-3xl">
       <p className="text-sm font-semibold text-[var(--blue)]">{article.category}</p>
       <h1 className="mt-2 text-3xl font-semibold">{article.title}</h1>
       <div className="mt-6 rounded-[var(--radius)] border border-[var(--line)] border-l-[4px] border-l-[var(--yellow)] bg-[var(--wash)] p-4">
@@ -53,15 +54,15 @@ export default async function ArticlePage({
           ) : null}
         </nav>
       ) : null}
-      <p className="mt-8 no-print flex flex-wrap items-center gap-4">
-        <Link href="/library" className="font-semibold text-[var(--blue)]">
+      <div className="no-print mt-8 flex flex-wrap items-center gap-3">
+        <Button href="/library" variant="secondary" size="sm">
           Back to handbook
-        </Link>
-        <Link href="/ask" className="font-semibold text-[var(--blue)]">
+        </Button>
+        <Button href="/ask" variant="secondary" size="sm">
           Ask a question about this
-        </Link>
+        </Button>
         <PrintArticle />
-      </p>
+      </div>
     </article>
   );
 }

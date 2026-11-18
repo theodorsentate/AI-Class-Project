@@ -159,12 +159,14 @@ function EscalateForm() {
                 >
                   {(Object.keys(TEAM_INFO) as DraftTeam[]).map((id) => (
                     <option key={id} value={id}>
-                      {TEAM_INFO[id].label} ({inboxFor(id, company)})
+                      {TEAM_INFO[id].label}
                     </option>
                   ))}
                 </Select>
               </div>
               <p className="text-sm text-[var(--muted)] sm:max-w-[16rem]">
+                <span className="font-semibold">{inbox}</span>
+                <br />
                 {info.handles}. {info.time}.
               </p>
             </div>

@@ -160,9 +160,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="no-print border-b border-[var(--line)] bg-[var(--surface)]" role="banner">
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-8">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 md:px-8">
             <BrandMark />
-            <div className="ml-auto flex flex-wrap items-center gap-2">
+            <div className="ml-auto flex items-center gap-1 sm:gap-2">
               <SearchControl />
               <GetHelpLink />
               <ThemeToggle />
