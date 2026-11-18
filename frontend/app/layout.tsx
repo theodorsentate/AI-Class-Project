@@ -6,7 +6,7 @@ import { ToastProvider } from "@/context/ToastContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Employee onboarding assistant",
+  title: "Handbook Buddy",
   description:
     "First-week needs, handbook answers, and a private path for questions you do not want to take to your manager.",
 };

@@ -124,7 +124,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <aside aria-label="Sidebar" className="no-print hidden w-64 shrink-0 border-r border-[var(--line)] bg-[var(--surface)] md:block">
         <div className="px-4 py-5">
           <p className="text-xs font-semibold tracking-[0.16em] text-[var(--blue)] uppercase">
-            Employee onboarding
+            Handbook Buddy
           </p>
           <div className="mt-2">
             <BrandMark />

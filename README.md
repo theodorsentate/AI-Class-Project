@@ -1,4 +1,4 @@
-# AI Employee Onboarding Assistant
+# Handbook Buddy
 
 A school project for my AI Powered class. New hires get answers from one central place instead of going to their manager.
 

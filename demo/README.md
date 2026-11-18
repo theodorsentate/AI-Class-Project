@@ -1,6 +1,6 @@
 # Clickable demo
 
-`northshore-demo.html` is the real onboarding assistant from `../frontend`, packed into a single file. Double-click it to open it in a browser. No server, install, or internet connection is needed (the page tries to load one web font and falls back cleanly without it).
+`northshore-demo.html` is the real Handbook Buddy app from `../frontend`, packed into a single file. Double-click it to open it in a browser. No server, install, or internet connection is needed (the page tries to load one web font and falls back cleanly without it).
 
 ## What works and what is different from the real app
 
