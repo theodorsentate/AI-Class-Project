@@ -13,8 +13,8 @@ test("keyboard path from home to ask, source, checklist, and escalate", async ({
   await box.focus();
   await page.keyboard.press("Space");
   await expect(box).toBeChecked();
-  await page.getByRole("link", { name: "Send to People Ops or IT" }).first().click();
-  await page.getByLabel("What do you need?").fill("Need a laptop charger");
+  await page.getByRole("link", { name: "Email for help" }).first().click();
+  await page.getByLabel("Message").fill("Need a laptop charger");
   await page.getByRole("button", { name: "Queue confidential note" }).click();
   await expect(page.getByText(/Your manager is not in the copy list/)).toBeVisible();
 });

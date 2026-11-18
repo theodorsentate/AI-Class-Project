@@ -23,7 +23,7 @@ export default function SupportPage() {
         ))}
       </ul>
       <p>
-        <Button href="/escalate">Reach People Ops or IT</Button>
+        <Button href="/escalate">Email for help</Button>
       </p>
     </div>
   );

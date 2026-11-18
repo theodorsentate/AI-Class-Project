@@ -33,7 +33,7 @@ const groups = [
   {
     label: "Get help",
     items: [
-      { href: "/escalate", label: "Send to People Ops or IT", icon: HelpCircle },
+      { href: "/escalate", label: "Email for help", icon: HelpCircle },
       { href: "/support", label: "Need support?", icon: HelpCircle },
       { href: "/setup", label: "Company setup", icon: MoreHorizontal },
     ],
@@ -101,7 +101,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       "/library": "Handbook",
       "/people": "People",
       "/data": "Data",
-      "/escalate": "Send to People Ops or IT",
+      "/escalate": "Email for help",
       "/support": "Need support?",
       "/setup": "Company setup",
     };

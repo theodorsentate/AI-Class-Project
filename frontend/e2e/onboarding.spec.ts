@@ -49,7 +49,7 @@ test("company setup updates the header", async ({ page }) => {
 
 test("escalation confirms manager is not copied", async ({ page }) => {
   await page.goto("/escalate");
-  const note = page.getByLabel("What do you need?");
+  const note = page.getByLabel("Message");
   await note.fill("Need a laptop charger");
   await expect(note).toHaveValue("Need a laptop charger");
   await page.getByRole("button", { name: "Queue confidential note" }).click();

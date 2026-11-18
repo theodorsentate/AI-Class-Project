@@ -14,7 +14,7 @@ export const appPages: SearchHit[] = [
   { href: "/ask", title: "Ask privately", detail: "Questions without going to a manager", kind: "page" },
   { href: "/week", title: "First week", detail: "Checklist and due dates", kind: "page" },
   { href: "/library", title: "Handbook", detail: "Browse policies", kind: "page" },
-  { href: "/escalate", title: "Send to People Ops or IT", detail: "Confidential note", kind: "page" },
+  { href: "/escalate", title: "Email for help", detail: "Confidential note", kind: "page" },
   { href: "/support", title: "Need support?", detail: "988 and People Ops", kind: "page" },
   { href: "/setup", title: "Company setup", detail: "Name, contacts, handbook editor", kind: "page" },
   { href: "/people", title: "People directory", detail: "Who to contact", kind: "page" },
