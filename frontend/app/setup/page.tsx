@@ -19,6 +19,8 @@ const fields: { key: keyof CompanyProfile; label: string; hint: string }[] = [
   { key: "ethicsHotline", label: "Ethics or safety hotline", hint: "Shown for harassment, illegal, or unsafe topics" },
   { key: "buddyName", label: "Default onboarding buddy", hint: "Peer contact, not the manager" },
   { key: "workHours", label: "Core hours", hint: "Repeated on the first-week list" },
+  { key: "hireName", label: "New hire name (optional)", hint: "Shown in the welcome on the home page" },
+  { key: "hireRole", label: "New hire role (optional)", hint: "For example Sales Development Representative" },
   { key: "logoUrl", label: "Logo URL (optional)", hint: "Square or wide. Leave blank if you have no logo." },
 ];
 

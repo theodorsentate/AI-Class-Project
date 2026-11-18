@@ -4,13 +4,15 @@ import { safeLocal } from "@/lib/safe-storage";
 export const STORAGE_KEY = "harbor-company-v1";
 
 export const defaultCompany: CompanyProfile = {
-  name: "Northshore Goods",
-  industry: "Retail and operations",
-  peopleEmail: "people@northshore.example",
-  itEmail: "it@northshore.example",
+  name: "Lumenfield",
+  industry: "Software (sample company)",
+  peopleEmail: "people@lumenfield.example",
+  itEmail: "it@lumenfield.example",
   ethicsHotline: "1-800-555-0142",
-  buddyName: "Alex Rivera",
-  workHours: "Monday to Friday, 9:00 to 17:30 local time",
+  buddyName: "Marcus Hill",
+  workHours: "Monday to Friday, 8:30 to 17:30 Central",
+  hireName: "Jordan Reyes",
+  hireRole: "Sales Development Representative, Mid-Market pod",
 };
 
 export function loadCompany(): CompanyProfile {

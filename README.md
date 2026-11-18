@@ -11,8 +11,8 @@ The demo runs on a **fictional company, Meridian Works**. Every person, phone nu
 | `index.html` | The whole app in one self-contained file. Open it in a browser, or host it anywhere static. |
 | `handbook-seed.json` | The handbook content the app ships with (93 sections, about 24,000 words). |
 | `Onboarding-Assistant-One-Pager.pdf` | One-page business summary of the idea. |
-| `frontend/` | The Next.js app we are building and presenting. Company: Northshore Goods (fictional). Ask privately, First week, Handbook (31 sections), People, Data tables, search, safety routing, email drafts, a handbook editor, dark mode. |
-| `demo/` | `northshore-demo.html`: the Next.js app packed into one clickable file. No install or server needed. See `demo/README.md`. |
+| `frontend/` | The Next.js app we are building and presenting. Sample company: Lumenfield, a fictional software company, with a new Sales Development Rep (Jordan Reyes) as the user. Ask privately, First week, Handbook (41 sections in 7 groups), People, Data tables, search, safety routing, email drafts, a handbook editor, dark mode. |
+| `demo/` | `handbook-buddy-demo.html`: the Next.js app packed into one clickable file. No install or server needed. See `demo/README.md`. |
 
 ## Static demo
 
@@ -27,11 +27,11 @@ Eight tabs: Home, Ask, Checklist, Handbook, Data, People, Email and Insights.
 - **Search**: press Ctrl+K (or ⌘K) anywhere to search sections, tables and people, or ask the assistant.
 - **Insights**: for editors only; shows unanswered and downvoted questions.
 
-## Next.js app (Northshore Goods)
+## Next.js app (Lumenfield sample)
 
 This is the version we are presenting. The handbook has 31 sections covering first week, pay, time off, benefits, IT and security, equipment, expenses, schedules, conduct, leave, safety, wellbeing, performance, learning, moves and leaving, plus lookup tables and a sample people directory. All names, phone numbers and emails are made up (555 numbers, `northshore.example`).
 
-**Quick look:** open `demo/northshore-demo.html` in a browser.
+**Quick look:** open `demo/handbook-buddy-demo.html` in a browser.
 
 **Run it for real:**
 

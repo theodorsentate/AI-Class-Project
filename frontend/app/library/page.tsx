@@ -47,12 +47,26 @@ export default function LibraryPage() {
           </Select>
         </label>
       </div>
+      {groups.length > 1 ? (
+        <nav aria-label="Jump to a section" className="rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] p-4">
+          <p className="text-sm font-semibold">Jump to a section</p>
+          <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            {groups.map((group) => (
+              <li key={group}>
+                <a className="font-semibold text-[var(--blue)] underline-offset-4 hover:underline" href={`#cat-${group.replace(/\s+/g, "-")}`}>
+                  {group}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
       {visible.length === 0 ? (
         <EmptyState title="No matching articles" body="Clear the search or pick another category." />
       ) : null}
       {groups.map((group) => (
           <section key={group} aria-labelledby={`cat-${group.replace(/\s+/g, "-")}`}>
-          <h2 id={`cat-${group.replace(/\s+/g, "-")}`} className="text-xl font-semibold">
+          <h2 id={`cat-${group.replace(/\s+/g, "-")}`} className="scroll-mt-24 text-xl font-semibold">
             {group}
           </h2>
           <ul className="mt-4 grid gap-4 md:grid-cols-2">

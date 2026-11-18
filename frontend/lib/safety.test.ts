@@ -73,7 +73,7 @@ describe("isInformational", () => {
 });
 
 describe("eapFromHandbook", () => {
-  it("reads the EAP number from the Northshore handbook", () => {
+  it("reads the EAP number from the Lumenfield handbook", () => {
     expect(eapFromHandbook()?.phone).toMatch(/800/);
   });
 });

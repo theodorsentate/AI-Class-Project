@@ -14,10 +14,10 @@ test("private ask returns a time off answer", async ({ page }) => {
   await page.getByRole("button", { name: "Get an answer" }).click();
   await expect(page.getByRole("heading", { name: "Answer" })).toBeVisible();
   await expect(page.getByText(/time off|leave|timekeeping/i).first()).toBeVisible();
-  const handbookLink = page.getByRole("link", { name: /Time off, sick days, and holidays/i });
+  const handbookLink = page.getByRole("link", { name: /Paid time off, sick days and holidays/i });
   await expect(handbookLink).toBeVisible();
   await handbookLink.click();
-  await expect(page.getByRole("heading", { name: "Time off, sick days, and holidays" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Paid time off, sick days and holidays" })).toBeVisible();
 });
 
 test("first week checklist can be completed", async ({ page }) => {
@@ -26,7 +26,7 @@ test("first week checklist can be completed", async ({ page }) => {
   await expect(box).toBeEnabled();
   await box.click();
   await expect(box).toBeChecked();
-  await expect(page.getByText("Completed 1 of 7.")).toBeVisible();
+  await expect(page.getByText("Completed 1 of 8.")).toBeVisible();
 });
 
 test("handbook article opens", async ({ page }) => {

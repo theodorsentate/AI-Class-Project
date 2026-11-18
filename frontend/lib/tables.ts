@@ -7,45 +7,9 @@ export type LookupTable = {
 };
 
 export const tablesNote =
-  "Sample lookup tables for Northshore Goods. Replace this file with your company data.";
+  "Sample lookup tables for Lumenfield, a fictional company. All figures are invented. Replace this file with your company data.";
 
 export const tables: LookupTable[] = [
-  {
-    id: "holidays",
-    title: "Holidays",
-    summary: "Company-observed holidays listed in the Northshore handbook.",
-    columns: ["Date", "Holiday"],
-    rows: [
-      ["2026-01-01", "New Year's Day"],
-      ["2026-05-25", "Memorial Day"],
-      ["2026-07-04", "Independence Day"],
-      ["2026-09-07", "Labor Day"],
-      ["2026-11-26", "Thanksgiving"],
-      ["2026-12-25", "Christmas Day"],
-    ],
-  },
-  {
-    id: "pay-dates",
-    title: "Pay dates",
-    summary: "Biweekly Fridays. Confirm exceptions with People Ops.",
-    columns: ["Pay date", "Period ending"],
-    rows: [
-      ["2026-11-13", "2026-11-07"],
-      ["2026-11-27", "2026-11-21"],
-      ["2026-12-11", "2026-12-05"],
-    ],
-  },
-  {
-    id: "benefits",
-    title: "Benefits plans",
-    summary: "High-level comparison. Enrollment is due by business day 10.",
-    columns: ["Plan", "What it covers"],
-    rows: [
-      ["Medical A", "In-network primary care copay"],
-      ["Dental", "Preventive visits twice a year"],
-      ["401(k)", "Employee contribution with company match described in the offer packet"],
-    ],
-  },
   {
     id: "key-deadlines",
     title: "Key new-hire deadlines",
@@ -54,7 +18,71 @@ export const tables: LookupTable[] = [
     rows: [
       ["Turn on multi-factor authentication", "Business day 1"],
       ["Employment eligibility paperwork", "Business day 3"],
+      ["CRM and call-tools certification", "Business day 5"],
       ["Benefits enrollment", "Business day 10"],
+    ],
+  },
+  {
+    id: "ramp-quota",
+    title: "Ramp and quota (sample)",
+    summary: "Meetings held per month. Your offer letter has the plan that applies to you.",
+    columns: ["Month", "Quota (meetings held)", "Share of full quota"],
+    rows: [
+      ["Month 1", "0", "0 percent, learning"],
+      ["Month 2", "6", "50 percent"],
+      ["Month 3", "9", "75 percent"],
+      ["Month 4 and after", "12", "100 percent"],
+    ],
+  },
+  {
+    id: "activity-targets",
+    title: "Daily activity targets at full ramp",
+    summary: "Ramp months run at 50 percent and 75 percent of these.",
+    columns: ["Activity", "Per day"],
+    rows: [
+      ["Dials", "60"],
+      ["Personalized emails", "40"],
+      ["LinkedIn touches", "20"],
+    ],
+  },
+  {
+    id: "pay-dates",
+    title: "Pay dates",
+    summary: "Base pay on the 15th and the last business day. Commission is paid on the 15th of the following month.",
+    columns: ["Pay date", "What is paid"],
+    rows: [
+      ["2026-11-30", "Base pay"],
+      ["2026-12-15", "Base pay and November commission"],
+      ["2026-12-31", "Base pay"],
+      ["2027-01-15", "Base pay and December commission"],
+    ],
+  },
+  {
+    id: "holidays",
+    title: "Company holidays",
+    summary: "Paid days off that do not use PTO.",
+    columns: ["Date", "Holiday"],
+    rows: [
+      ["2026-11-26", "Thanksgiving"],
+      ["2026-11-27", "Day after Thanksgiving"],
+      ["2026-12-24", "Winter break"],
+      ["2026-12-25", "Christmas Day"],
+      ["2027-01-01", "New Year's Day"],
+      ["2027-05-31", "Memorial Day"],
+      ["2027-07-05", "Independence Day (observed)"],
+      ["2027-09-06", "Labor Day"],
+    ],
+  },
+  {
+    id: "benefits",
+    title: "Benefits plans",
+    summary: "High-level comparison. Enrollment is due by business day 10.",
+    columns: ["Plan", "What it covers"],
+    rows: [
+      ["Medical", "In-network primary care copay and preventive care"],
+      ["Dental", "Preventive visits twice a year"],
+      ["Vision", "Yearly eye exam and a frame or lens allowance"],
+      ["401(k)", "Company match of up to 4 percent of pay"],
     ],
   },
   {
@@ -69,7 +97,7 @@ export const tables: LookupTable[] = [
       ["Home office allowance (hybrid and remote)", "$250, one time"],
       ["Learning budget", "$500 per year"],
       ["Vendor or customer gifts", "Do not accept over $50; never cash or gift cards"],
-      ["Employee discount", "25 percent off regular-priced products"],
+      ["Referral bonus", "$2,000 after the new hire completes 90 days"],
     ],
   },
   {
@@ -78,8 +106,9 @@ export const tables: LookupTable[] = [
     summary: "Who to tell and what to expect. People Ops confirms eligibility in writing.",
     columns: ["Leave", "First step", "Note"],
     rows: [
+      ["Sick days", "Message your manager and pod by 8:45", "5 paid days per year"],
       ["Medical", "Write People Ops", "Clinician documentation may be requested and stays with People Ops"],
-      ["Parental and family bonding", "Write People Ops early", "Length depends on location and tenure"],
+      ["Parental and family bonding", "Write People Ops early", "Up to 12 weeks paid"],
       ["Caregiver", "Write People Ops", "Eligibility confirmed in writing"],
       ["Bereavement", "Tell your manager and People Ops", "3 paid days for an immediate family member"],
       ["Jury duty", "Tell People Ops with your notice", "Follows local law"],

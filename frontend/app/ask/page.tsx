@@ -56,7 +56,8 @@ function AskForm() {
     () => [
       "Do I have to ask my manager about pay?",
       "How do I request time off?",
-      "I am locked out of email",
+      "When does a meeting count toward my quota?",
+      "Can I quote a price to a prospect?",
       "How do I report harassment?",
     ],
     [],

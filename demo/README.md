@@ -1,6 +1,6 @@
 # Clickable demo
 
-`northshore-demo.html` is the real Handbook Buddy app from `../frontend`, packed into a single file. Double-click it to open it in a browser. No server, install, or internet connection is needed (the page tries to load one web font and falls back cleanly without it).
+`handbook-buddy-demo.html` is the real Handbook Buddy app from `../frontend`, packed into a single file. Double-click it to open it in a browser. No server, install, or internet connection is needed (the page tries to load one web font and falls back cleanly without it).
 
 ## What works and what is different from the real app
 
@@ -18,6 +18,6 @@ Differences, because a static file has no server:
 bash demo/build.sh
 ```
 
-This copies `../frontend/{app,components,context,lib}` into `demo/spa/src/`, bundles everything with Vite into one HTML file, and writes `demo/northshore-demo.html`. Only these files are hand-written and committed: `spa/src/main.tsx` (the page router), `spa/src/shims/*` (small stand-ins for `next/link`, `next/navigation`, and `next/font`), `spa/index.html`, `spa/vite.config.ts`, and `spa/package.json`. The copied folders are git-ignored.
+This copies `../frontend/{app,components,context,lib}` into `demo/spa/src/`, bundles everything with Vite into one HTML file, and writes `demo/handbook-buddy-demo.html`. Only these files are hand-written and committed: `spa/src/main.tsx` (the page router), `spa/src/shims/*` (small stand-ins for `next/link`, `next/navigation`, and `next/font`), `spa/index.html`, `spa/vite.config.ts`, and `spa/package.json`. The copied folders are git-ignored.
 
 Rebuild and commit the HTML whenever `frontend/` changes, so the demo never lags behind the app.

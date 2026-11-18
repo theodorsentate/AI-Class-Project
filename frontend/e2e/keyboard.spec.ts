@@ -6,8 +6,8 @@ test("keyboard path from home to ask, source, checklist, and escalate", async ({
   await page.getByRole("link", { name: "Ask privately" }).first().click();
   await page.getByLabel("Your question").fill("How do I request time off?");
   await page.getByRole("button", { name: "Get an answer" }).click();
-  await page.getByRole("link", { name: /Time off, sick days, and holidays/i }).click();
-  await expect(page.getByRole("heading", { name: "Time off, sick days, and holidays" })).toBeVisible();
+  await page.getByRole("link", { name: /Paid time off, sick days and holidays/i }).click();
+  await expect(page.getByRole("heading", { name: "Paid time off, sick days and holidays" })).toBeVisible();
   await page.getByRole("link", { name: "First week" }).first().click();
   const box = page.getByRole("checkbox", { name: "Finish employment eligibility paperwork" });
   await box.focus();

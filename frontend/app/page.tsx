@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { StartDateField } from "@/components/StartDateField";
 import { UpNext } from "@/components/UpNext";
+import { Welcome } from "@/components/Welcome";
 import { Button } from "@/components/ui/Button";
 import { Card, PageHeader } from "@/components/ui/Card";
 
@@ -11,6 +12,7 @@ export default function HomePage() {
         title="One place for new-hire questions"
         description="Start with the next incomplete task, or ask the handbook without going through your manager."
       />
+      <Welcome />
       <Card className="p-6">
         <h2 className="text-lg font-semibold">What you should do next</h2>
         <p className="mt-2 max-w-[72ch] text-[var(--muted)]">

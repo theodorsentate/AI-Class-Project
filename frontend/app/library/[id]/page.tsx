@@ -19,29 +19,46 @@ export default async function ArticlePage({
   }
 
   const paragraphs = article.body.split(/\n{2,}/).filter(Boolean);
+  const siblings = articles.filter((item) => item.category === article.category);
+  const index = siblings.findIndex((item) => item.id === article.id);
+  const prev = index > 0 ? siblings[index - 1] : undefined;
+  const next = index < siblings.length - 1 ? siblings[index + 1] : undefined;
 
   return (
     <article className="mx-auto max-w-3xl">
       <p className="text-sm font-semibold text-[var(--blue)]">{article.category}</p>
       <h1 className="mt-2 text-3xl font-semibold">{article.title}</h1>
-      <p className="mt-6 text-lg leading-8 text-[var(--muted)]">{article.summary}</p>
-      <p className="mt-2 text-sm text-[var(--muted)]">Last updated: company handbook on this device</p>
-      <details className="mt-6 md:open" open>
-        <summary className="cursor-pointer text-sm font-semibold">On this page</summary>
-        <nav aria-label="On this page" className="mt-2">
-          <a className="text-sm text-[var(--blue)]" href="#article-body">
-            Article text
-          </a>
-        </nav>
-      </details>
+      <div className="mt-6 rounded-[var(--radius)] border border-[var(--line)] border-l-[4px] border-l-[var(--yellow)] bg-[var(--wash)] p-4">
+        <p className="text-sm font-semibold">In short</p>
+        <p className="mt-1 text-lg leading-8">{article.summary}</p>
+      </div>
       <div id="article-body" className="mt-6 space-y-4 text-base leading-8 whitespace-pre-wrap break-words">
         {paragraphs.map((paragraph, index) => (
           <p key={index}>{paragraph}</p>
         ))}
       </div>
+      {prev || next ? (
+        <nav aria-label="More in this section" className="no-print mt-10 grid gap-4 sm:grid-cols-2">
+          {prev ? (
+            <Link href={`/library/${prev.id}`} className="card block p-4 hover:border-[var(--blue)]">
+              <span className="text-sm text-[var(--muted)]">Previous in {article.category}</span>
+              <span className="mt-1 block font-semibold">{prev.title}</span>
+            </Link>
+          ) : <span />}
+          {next ? (
+            <Link href={`/library/${next.id}`} className="card block p-4 hover:border-[var(--blue)] sm:text-right">
+              <span className="text-sm text-[var(--muted)]">Next in {article.category}</span>
+              <span className="mt-1 block font-semibold">{next.title}</span>
+            </Link>
+          ) : null}
+        </nav>
+      ) : null}
       <p className="mt-8 no-print flex flex-wrap items-center gap-4">
         <Link href="/library" className="font-semibold text-[var(--blue)]">
           Back to handbook
+        </Link>
+        <Link href="/ask" className="font-semibold text-[var(--blue)]">
+          Ask a question about this
         </Link>
         <PrintArticle />
       </p>

@@ -25,6 +25,8 @@ export type CompanyProfile = {
   ethicsHotline: string;
   buddyName: string;
   workHours: string;
+  hireName?: string;
+  hireRole?: string;
   logoUrl?: string;
   accent?: string;
 };
@@ -33,7 +35,7 @@ export type ChecklistItem = {
   id: string;
   title: string;
   detail: string;
-  owner: "You" | "IT" | "People Ops";
+  owner: "You" | "IT" | "People Ops" | "Your manager" | "Sales Enablement" | "RevOps";
   dueBusinessDay?: number;
 };
 

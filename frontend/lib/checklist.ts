@@ -4,6 +4,14 @@ export const CHECKLIST_KEY = "harbor-checklist-v1";
 
 export const defaultChecklist: ChecklistItem[] = [
   {
+    id: "access",
+    title: "Turn on email, Slack and multi-factor sign-in",
+    detail:
+      "IT sends a first-login email. If it did not arrive, ask this assistant or write IT directly. You do not need your manager for access issues.",
+    owner: "IT",
+    dueBusinessDay: 1,
+  },
+  {
     id: "eligibility",
     title: "Finish employment eligibility paperwork",
     detail:
@@ -12,39 +20,41 @@ export const defaultChecklist: ChecklistItem[] = [
     dueBusinessDay: 3,
   },
   {
-    id: "access",
-    title: "Turn on email, chat, and multi-factor sign-in",
-    detail:
-      "IT sends a first-login email. If it did not arrive, ask this assistant or write IT directly. You do not need your manager for access issues.",
-    owner: "IT",
-    dueBusinessDay: 1,
-  },
-  {
-    id: "handbook",
-    title: "Read the handbook articles in this tool",
-    detail:
-      "Pay, time off, equipment, and respectful workplace are the four to finish in week one.",
-    owner: "You",
-  },
-  {
     id: "buddy",
-    title: "Book a 20-minute intro with your onboarding buddy",
+    title: "Book a 20-minute intro with Marcus, your onboarding buddy",
     detail:
-      "Your buddy is a peer, not your manager. Use them for unwritten norms: lunch, tools, and who actually owns what.",
+      "Marcus is a peer, not your manager. Ask him about unwritten norms: call blocks, who to ask in Slack, and which accounts to start with.",
     owner: "You",
   },
   {
-    id: "timekeeping",
-    title: "Confirm how hours or time off are recorded",
+    id: "certification",
+    title: "Complete the CRM and call-tools certification",
     detail:
-      "Wrong timekeeping is a common first-month mistake. The handbook explains the steps in plain language.",
-    owner: "People Ops",
+      "Sales Enablement runs it. You need it before you start your own cadences. Book your slot in week one.",
+    owner: "Sales Enablement",
+    dueBusinessDay: 5,
+  },
+  {
+    id: "accounts",
+    title: "Review your account list with your manager",
+    detail:
+      "Priya and RevOps assign your Mid-Market accounts in the CRM. Check that you can see them and ask which to start with.",
+    owner: "Your manager",
+    dueBusinessDay: 5,
+  },
+  {
+    id: "shadow",
+    title: "Shadow five live calls with senior SDRs",
+    detail:
+      "Listen first, then take notes in the CRM. Note one thing you would repeat and one thing you would change.",
+    owner: "You",
+    dueBusinessDay: 5,
   },
   {
     id: "benefits",
     title: "Note your benefits enrollment deadline",
     detail:
-      "Many plans lock after a short window. Open the Benefits article even if you are not ready to choose yet.",
+      "Plans lock after a short window. Open the Benefits article even if you are not ready to choose yet.",
     owner: "People Ops",
     dueBusinessDay: 10,
   },

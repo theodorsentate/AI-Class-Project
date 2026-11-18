@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds demo/northshore-demo.html: the real Next.js app in ../frontend as ONE static file.
+# Builds demo/handbook-buddy-demo.html: the real Next.js app in ../frontend as ONE static file.
 # Needs only Node and npm. Run from anywhere:  bash demo/build.sh
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -29,5 +29,5 @@ npx vite build
 for cls in '.sticky{' '.rounded-xl{' '.grid{' '.flex{' 'html.dark'; do
   grep -qF -- "$cls" dist/index.html || { echo "ERROR: built CSS is missing $cls. The demo would be unstyled." >&2; exit 1; }
 done
-cp dist/index.html "$here/northshore-demo.html"
-echo "Wrote $here/northshore-demo.html ($(wc -c < "$here/northshore-demo.html") bytes)"
+cp dist/index.html "$here/handbook-buddy-demo.html"
+echo "Wrote $here/handbook-buddy-demo.html ($(wc -c < "$here/handbook-buddy-demo.html") bytes)"

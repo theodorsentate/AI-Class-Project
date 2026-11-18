@@ -37,13 +37,13 @@ describe("handbook content", () => {
 
   it("deadlines in the handbook match the checklist and the deadlines table", () => {
     const due = Object.fromEntries(defaultChecklist.filter((c) => c.dueBusinessDay).map((c) => [c.id, c.dueBusinessDay]));
-    expect(due).toEqual({ eligibility: 3, access: 1, benefits: 10 });
+    expect(due).toEqual({ access: 1, eligibility: 3, certification: 5, accounts: 5, shadow: 5, benefits: 10 });
     const text = Object.fromEntries(articles.map((a) => [a.id, a.body]));
     expect(text["first-day"]).toContain("business day 3");
     expect(text["it-setup"]).toContain("business day 1");
     expect(text["benefits"]).toContain("business day 10");
     const deadlines = tables.find((t) => t.id === "key-deadlines");
-    expect(deadlines?.rows.map((r) => r[1])).toEqual(["Business day 1", "Business day 3", "Business day 10"]);
+    expect(deadlines?.rows.map((r) => r[1])).toEqual(["Business day 1", "Business day 3", "Business day 5", "Business day 10"]);
   });
 
   it("uses the company's real contact details and no invented ones", () => {
@@ -51,9 +51,9 @@ describe("handbook content", () => {
     const phones = new Set(all.match(/1-800-555-\d{4}/g) ?? []);
     expect([...phones].sort()).toEqual(["1-800-555-0142", "1-800-555-0199"]);
     expect(all).toContain(defaultCompany.ethicsHotline);
-    const emails = new Set(all.match(/[a-z.]+@northshore\.example/g) ?? []);
+    const emails = new Set(all.match(/[a-z.]+@lumenfield\.example/g) ?? []);
     for (const e of emails) {
-      expect(["people@northshore.example", "it@northshore.example", "safety@northshore.example", "alex.rivera@northshore.example"]).toContain(e);
+      expect(["people@lumenfield.example", "it@lumenfield.example", "safety@lumenfield.example", "revops@lumenfield.example", "enablement@lumenfield.example", "compliance@lumenfield.example", "press@lumenfield.example", "priya.natarajan@lumenfield.example", "marcus.hill@lumenfield.example"]).toContain(e);
     }
   });
 
