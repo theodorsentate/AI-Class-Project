@@ -106,14 +106,11 @@ export function composeReply(
   }
 
   const confident = ranked.filter((hit) => hit.score >= LOW_CONFIDENCE);
-  const extras = confident.slice(1).map((hit) => hit.article.title);
 
-  let text = `${bestSentences(top.article.body, question, 3)} Source: ${top.article.title}.`;
-  if (extras.length > 0) {
-    text += ` Related: ${extras.join("; ")}.`;
-  }
+  // The sources are shown as links under the answer, so the text does not repeat them.
+  let text = bestSentences(top.article.body, question, 3);
   if (sensitive) {
-    text += ` You can handle this without your manager. People Ops: ${company.peopleEmail}. Ethics hotline: ${company.ethicsHotline}.`;
+    text += `\n\nYou can handle this without your manager. People Ops: ${company.peopleEmail}. Ethics hotline: ${company.ethicsHotline}.`;
   }
 
   return {
