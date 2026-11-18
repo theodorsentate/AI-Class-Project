@@ -37,6 +37,10 @@ export type ChecklistItem = {
   detail: string;
   owner: "You" | "IT" | "People Ops" | "Your manager" | "Sales Enablement" | "RevOps";
   dueBusinessDay?: number;
+  /** Handbook article that explains this task. */
+  articleId?: string;
+  /** Email-help topic that drafts a note about this task. */
+  askTopic?: string;
 };
 
 export type AssistantReply = {

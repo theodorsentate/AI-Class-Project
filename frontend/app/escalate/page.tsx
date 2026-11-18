@@ -37,6 +37,11 @@ function EscalateForm() {
   const lastDraft = useRef("");
 
   useEffect(() => {
+    const wanted = params.get("topic");
+    if (wanted && DRAFT_TOPICS[wanted]) {
+      void draftFor(wanted);
+      return;
+    }
     const preset = params.get("q");
     if (preset) {
       const d = localDraft(undefined, preset, company);
