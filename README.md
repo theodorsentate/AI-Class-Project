@@ -43,7 +43,15 @@ npm run dev
 
 Open http://localhost:3000
 
-Optional: set `OPENAI_API_KEY` so `/api/ask` rewrites handbook answers with an LLM. Without a key, answers still come from the handbook search.
+### Turn on the real AI answers
+
+The single-file demo in `demo/` has no server, so it always uses the built-in handbook search. For live AI answers, run or host the Next.js app with a key:
+
+1. Copy `frontend/.env.example` to `frontend/.env.local` and fill in **one** key: `ANTHROPIC_API_KEY` (Claude, default model `claude-haiku-5-5`, change with `ANTHROPIC_MODEL`) or `OPENAI_API_KEY`. Anthropic wins if both are set.
+2. `npm run dev`, then ask a question on the Ask page. Answers now come from the model, still limited to the handbook, with sources.
+3. To host it (for example on Vercel), import the repo, set the root directory to `frontend`, and add the same key as an environment variable in the host's settings. Never commit a real key.
+
+Crisis wording is never sent to the model, and if the model call fails the app falls back to handbook search, so the Ask page always answers. Without a key, answers still come from the handbook search.
 
 ```bash
 npm test

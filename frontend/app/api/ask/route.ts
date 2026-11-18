@@ -1,4 +1,5 @@
 import { composeReply } from "@/lib/compose";
+import { complete, llmProvider } from "@/lib/llm";
 import { defaultCompany } from "@/lib/company";
 import { canSendAll, excerptText, fullCorpusText } from "@/lib/corpus";
 import { articles as defaultArticles, getArticle } from "@/lib/knowledge";
@@ -37,9 +38,7 @@ export async function POST(request: Request) {
   if (safety?.crisis) {
     return Response.json({ ...handbook, crisis: true, sensitive: true, text: "", escalate: false });
   }
-  const key = process.env.OPENAI_API_KEY;
-
-  if (!key) {
+  if (!llmProvider()) {
     return Response.json(handbook);
   }
 
@@ -55,41 +54,13 @@ export async function POST(request: Request) {
   };
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        temperature: 0.2,
-        messages: [
-          {
-            role: "system",
-            content: systemPrompt(
-              excerpts,
-              company,
-              snapshot,
-              full,
-              sectionIndex(pool),
-            ),
-          },
-          { role: "user", content: question },
-        ],
-      }),
-      signal: AbortSignal.timeout(20000),
-    });
-
-    if (!response.ok) {
+    const raw = await complete(
+      systemPrompt(excerpts, company, snapshot, full, sectionIndex(pool)),
+      question,
+    );
+    if (!raw) {
       return Response.json(handbook);
     }
-
-    const data = (await response.json()) as {
-      choices?: { message?: { content?: string } }[];
-    };
-    let raw = data.choices?.[0]?.message?.content?.trim() ?? "";
-    raw = raw.replace(/^```json\s*|\s*```$/g, "");
     const parsed = JSON.parse(raw) as {
       answer?: string;
       sources?: string[];

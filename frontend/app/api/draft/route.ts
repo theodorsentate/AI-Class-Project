@@ -1,5 +1,6 @@
 import { defaultCompany } from "@/lib/company";
 import { excerptText } from "@/lib/corpus";
+import { complete, llmProvider } from "@/lib/llm";
 import { articles } from "@/lib/knowledge";
 import { retrieve } from "@/lib/retrieve";
 import { DRAFT_TOPICS, fallbackTemplate } from "@/lib/draft";
@@ -17,39 +18,18 @@ export async function POST(request: Request) {
   const company = { ...defaultCompany, ...body.company };
   const need = (body.need || topic?.prompt || "").trim();
   const template = fallbackTemplate(team, company, need);
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) {
+  if (!llmProvider()) {
     return Response.json({ ...template, mode: "template" });
   }
   const hits = retrieve(need, articles, 4);
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        temperature: 0.2,
-        messages: [
-          {
-            role: "system",
-            content: `Write a short email from a new employee at ${company.name} to ${team === "people" ? "People Ops" : "IT"} (${team === "people" ? company.peopleEmail : company.itEmail}). Plain, polite, one clear ask. Never invent policies. Do not mention AI. Reply JSON only: {"subject": string, "body": string}\n\nHANDBOOK:\n${excerptText(hits.map((hit) => hit.article))}`,
-          },
-          { role: "user", content: need },
-        ],
-      }),
-      signal: AbortSignal.timeout(20000),
-    });
-    if (!response.ok) {
+    const raw = await complete(
+      `Write a short email from a new employee at ${company.name} to ${team === "people" ? "People Ops" : "IT"} (${team === "people" ? company.peopleEmail : company.itEmail}). Plain, polite, one clear ask. Never invent policies. Do not mention AI. Reply JSON only: {"subject": string, "body": string}\n\nHANDBOOK:\n${excerptText(hits.map((hit) => hit.article))}`,
+      need,
+    );
+    if (!raw) {
       return Response.json({ ...template, mode: "template" });
     }
-    const data = (await response.json()) as {
-      choices?: { message?: { content?: string } }[];
-    };
-    let raw = data.choices?.[0]?.message?.content?.trim() ?? "";
-    raw = raw.replace(/^```json\s*|\s*```$/g, "");
     const parsed = JSON.parse(raw) as { subject?: string; body?: string };
     return Response.json({
       subject: parsed.subject || template.subject,
